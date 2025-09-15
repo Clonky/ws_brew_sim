@@ -1,0 +1,11 @@
+[build-system]
+requires = ["uv_build >= 0.7.19, <0.9.0"]
+build-backend = "uv_build"
+
+[project]
+name = "ws_brew_sim"
+dynamic = ["version"]
+
+dependencies = ["asyncua", "logger"]
+
+authors = [{ name = "Philip Schmid", email = "philip.schmid@tum.de" }]
