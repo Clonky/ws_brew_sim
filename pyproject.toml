@@ -6,6 +6,6 @@ build-backend = "uv_build"
 name = "ws_brew_sim"
 dynamic = ["version"]
 
-dependencies = ["asyncua", "logger"]
+dependencies = ["asyncua", "logger", "asyncio"]
 
 authors = [{ name = "Philip Schmid", email = "philip.schmid@tum.de" }]
