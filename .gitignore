@@ -1,2 +1,5 @@
 .venv
 xmls
+uv.lock
+log.txt
+*.pyc
