@@ -22,7 +22,6 @@ async def main():
     server.set_security_policy([ua.SecurityPolicyType.NoSecurity])
 
     uri = "http://wsbrewsim.bgt/"
-
     await server.register_namespace(uri)
 
     for xml in get_xmls():
