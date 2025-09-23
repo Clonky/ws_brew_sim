@@ -2,6 +2,7 @@ from .utils import NodeId
 from .simulation import Simulation
 from .behaviours import NormalDistBehaviour
 from asyncua import Server
+from asyncua.common.node import Node
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,9 +34,10 @@ class Unit:
         self.name = name
         self.node_id = node_id
         self.job = None
-        self.node = None
+        self.node: Node | None = None
         self.modules = []
         self.simulation = simulation
+        self.evgen = dict()
 
     def register_module(self, module: Module):
         self.modules.append(module)
@@ -53,6 +55,13 @@ class Unit:
 
         for module in self.modules:
             await module.connect(server)
+
+    async def setup_evgen(self, server, evnode: Node):
+        if not self.node:
+            await self.connect(server)
+        else:
+            transfer_gen = await server.get_event_generator(evnode, self.node.nodeid)
+            self.evgen["TransferEvent"] = transfer_gen
 
     async def run(self):
         for module in self.modules:
