@@ -52,14 +52,16 @@ class Unit:
         if not self.node:
             self.node = server.get_node(f"ns={self.node_id.ns};i={self.node_id.id}")
             logger.info(f"Module {self.name} connected to node {self.node}")
+            await self.setup_evgen(server)
 
         for module in self.modules:
             await module.connect(server)
 
-    async def setup_evgen(self, server, evnode: Node):
+    async def setup_evgen(self, server: Server):
         if not self.node:
             await self.connect(server)
         else:
+            evnode = server.get_node("ns=14;i=10002")
             transfer_gen = await server.get_event_generator(evnode, self.node.nodeid)
             self.evgen["TransferEvent"] = transfer_gen
 
