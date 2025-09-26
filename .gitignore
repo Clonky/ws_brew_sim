@@ -3,3 +3,5 @@ xmls
 uv.lock
 log.txt
 *.pyc
+*.ua
+*.tt2pro
