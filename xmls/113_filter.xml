@@ -24,7 +24,7 @@
             <RequiredModel ModelUri="http://opcfoundation.org/UA/PADIM/" PublicationDate="2023-10-27T00:00:00Z" Version="1.01.0"/>
             <RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/Energy/" PublicationDate="2025-06-01T00:00:00Z" Version="1.00"/>
             <RequiredModel ModelUri="http://opcfoundation.org/UA/ECM/" PublicationDate="2025-02-01T00:00:00Z" Version="1.0.0"/>
-            <RequiredModel ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/" PublicationDate="2025-08-11T12:58:17.941872" Version="0.01.226"/>
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/" PublicationDate="2025-08-11T12:58:17.941872" Version="0.01.35"/>
             <RequiredModel ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBrew/" PublicationDate="2025-08-27T08:35:31.165101" Version="0.01.30"/>
         </Model>
     </Models>
