@@ -183,14 +183,6 @@
 		<DisplayName>WSTransferEventType</DisplayName>
 		<Description>After transferring or dosing a material into e.g. a tank, a TransferEvent is generated, which contains information such as source, destination, set and actual quantities about the tranfer process. </Description>
 		<References>
-			<Reference ReferenceType="HasProperty">ns=0;i=2042</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2043</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2044</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2045</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2046</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2047</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2050</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2051</Reference>
 			<Reference ReferenceType="HasSubtype" IsForward="false">ns=0;i=2041</Reference>
 			<Reference ReferenceType="HasProperty">ns=10;i=60002</Reference>
 			<Reference ReferenceType="HasProperty">ns=10;i=60003</Reference>
