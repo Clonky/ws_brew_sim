@@ -37,9 +37,6 @@ async def main():
     server.set_server_name("WS Brew Simulation Server")
     server.set_security_policy([ua.SecurityPolicyType.NoSecurity])
 
-    uri = "http://wsbrewsim.bgt/"
-    await server.register_namespace(uri)
-
     for xml in get_xmls():
         logging.info(f"Importing {xml}...")
         await server.import_xml(f"xmls/{xml}")
