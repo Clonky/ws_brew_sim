@@ -1,8 +1,12 @@
+from uuid import uuid4
 from .utils import NodeId
 from .simulation import Simulation
 from .behaviours import NormalDistBehaviour
 from asyncua import Server
 from asyncua.common.node import Node
+from asyncua import ua
+from asyncua.server.event_generator import EventGenerator
+import asyncio
 import logging
 
 logger = logging.getLogger(__name__)
@@ -17,7 +21,7 @@ class Module:
 
     async def connect(self, server: Server):
         if not self.node:
-            self.node = server.get_node(f"ns={self.node_id.ns};i={self.node_id.id}")
+            self.node = server.get_node(self.node_id)
             await self.node.set_writable()
             logger.info(f"Module {self.name} connected to node {self.node}")
 
@@ -30,7 +34,8 @@ class Module:
 
 
 class Unit:
-    def __init__(self, name: str, node_id: NodeId, simulation: Simulation):
+    def __init__(self, name: str, node_id: ua.NodeId, simulation: Simulation):
+        self.asset_id = str(uuid4())
         self.name = name
         self.node_id = node_id
         self.job = None
@@ -50,7 +55,7 @@ class Unit:
 
     async def connect(self, server: Server):
         if not self.node:
-            self.node = server.get_node(f"ns={self.node_id.ns};i={self.node_id.id}")
+            self.node = server.get_node(self.node_id)
             logger.info(f"Module {self.name} connected to node {self.node}")
             await self.setup_evgen(server)
 
@@ -61,9 +66,18 @@ class Unit:
         if not self.node:
             await self.connect(server)
         else:
-            evnode = server.get_node("ns=14;i=10002")
-            transfer_gen = await server.get_event_generator(evnode, self.node.nodeid)
+            transfer_gen = await self.create_transfer_event_generator(server)
             self.evgen["TransferEvent"] = transfer_gen
+
+    async def create_transfer_event_generator(self, server: Server):
+        ws_basis_idx = await server.get_namespace_index("http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/")
+        etype = await server.nodes.base_event_type.get_child(f"{ws_basis_idx}:WSTransferEventType")
+        filter_idx = await server.get_namespace_index("http://Implementation_Filter")
+        logging.warning(filter_idx)
+        target = server.get_node(ua.NodeId(5209, filter_idx))
+        transfer_gen: EventGenerator = await server.get_event_generator(etype, target)
+        return transfer_gen
+
 
     async def run(self):
         for module in self.modules:
@@ -72,14 +86,18 @@ class Unit:
 
 class FermentationTankExample(Unit):
     def __init__(self, simulation: Simulation):
-        self.name = "Fermentation Tank"
-        self.node_id = NodeId(16, "5209")
-        self.job = None
-        self.node = None
-        self.modules = []
-        self.simulation = simulation
+        super().__init__("15:FermentationTank", ua.NodeId(5209, 15), simulation)
         self._populate_modules()
 
+    async def run(self):
+        for module in self.modules:
+            await module.run()
+        self.evgen["TransferEvent"].event.SourceAssetId = self.asset_id
+        self.evgen["TransferEvent"].event.SourceName = "FermentationTank"
+        self.evgen["TransferEvent"].event.Severity = ua.Variant(100)
+        await self.evgen["TransferEvent"].trigger()
+        await asyncio.sleep(0.5)
+
     def _populate_modules(self):
-        temp = Module("Temperature", NodeId(16, "6277"), NormalDistBehaviour(12, 0.5))
+        temp = Module("Temperature", ua.NodeId(6277, 15), NormalDistBehaviour(12, 0.5))
         self.modules.append(temp)
