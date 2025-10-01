@@ -1,23 +1,29 @@
 import os
 import asyncio
 import asyncua
+from collections import deque
 from ws_brew_sim.simulation import Simulation
-from ws_brew_sim.units import FermentationTankExample
+from ws_brew_sim.units import FermentationTankExample, BrightBeerTankExample
+from ws_brew_sim.jobs import TransferJob
 from asyncua import ua
 import logging
 
 
 async def setup(server: asyncua.Server):
-    simulation = Simulation()
+
+
+    simulation = Simulation(server, units=[], jobs=[])
 
     units = [
-        FermentationTankExample(simulation),
+        FermentationTankExample(simulation, initial_vol=1000),
+        BrightBeerTankExample(simulation, initial_vol=0)
     ]
 
-    for unit in units:
-        await unit.connect(server)
-        simulation.units.append(unit)
-
+    jobs = deque([
+        TransferJob.new(source=units[0], target=units[1], amount=200, rate=20)
+    ])
+    simulation.units = units
+    simulation.jobs = jobs
     asyncio.create_task(simulation.start_loop())
 
 
