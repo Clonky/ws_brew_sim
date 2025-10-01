@@ -5,6 +5,7 @@ from collections import deque
 from ws_brew_sim.simulation import Simulation
 from ws_brew_sim.units import FermentationTankExample, BrightBeerTankExample
 from ws_brew_sim.jobs import TransferJob
+from ws_brew_sim.interface import create_interface
 from asyncua import ua
 import logging
 
@@ -25,6 +26,7 @@ async def setup(server: asyncua.Server):
     simulation.units = units
     simulation.jobs = jobs
     asyncio.create_task(simulation.start_loop())
+    asyncio.create_task(create_interface(simulation))
 
 
 def get_xmls():
