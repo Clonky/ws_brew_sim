@@ -24,9 +24,9 @@ class Job:
 class TransferJob(Job):
     source: Unit
     target: Unit
-    amount: float
-    rate: float
-    moved_volume: float = 0
+    amount: int
+    rate: int
+    moved_volume: int = 0
 
     @classmethod
     def new(cls, source: Unit, target: Unit, amount: int, rate: int):
