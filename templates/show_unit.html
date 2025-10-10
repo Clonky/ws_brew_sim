@@ -1,0 +1,19 @@
+<h2>Unit Details</h2>
+<p><strong>Name:</strong> {{ unit.name }}</p>
+<p><strong>ID:</strong> {{ unit.serial_number }}</p>
+<table>
+    <thead>
+        <tr>
+            <th>Module</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for module in unit.modules %}
+            <tr>
+                <td>{{ module.name }}</td>
+                <td hx-get="/value/{{unit.name}}/{{module.name}}" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

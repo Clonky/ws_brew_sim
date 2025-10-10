@@ -1,12 +1,17 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from uuid import uuid4
 import uvicorn
+from ws_brew_sim.units import Unit
 from ws_brew_sim.simulation import Simulation
 from ws_brew_sim.jobs import TransferJob, JobState
 
     
 def create_app(simulation: Simulation):
     app = FastAPI()
+
+    templates = Jinja2Templates(directory="templates")
 
     @app.post("/transfer_job")
     async def create_transfer_job(source_name: str, target_name: str, amount: int, rate: int):
@@ -18,9 +23,32 @@ def create_app(simulation: Simulation):
         simulation.add_job(job)
         return {"message": f"Transfer job from {source_name} to {target_name} added."}
 
-    @app.get("/")
-    async def read_root():
-        return {"message": "WS Brew Simulation API"}
+    @app.get("/", response_class=HTMLResponse)
+    async def read_root(request: Request):
+        return templates.TemplateResponse("index.html", {"request": request})
+
+    @app.get("/units", response_class=HTMLResponse)
+    async def index_units(request: Request):
+        return templates.TemplateResponse("units.html", {"request": request, "units": simulation.units})
+
+    @app.get("/value/{unit_name}/{module_name}", response_class=HTMLResponse)
+    async def get_updated_value(request: Request, unit_name: str, module_name: str):
+        unit: Unit | None = next((unit for unit in simulation.units if unit.name == unit_name), None)
+        if unit is None:
+            return HTMLResponse(content=f"<h2>Unit {unit_name} not found</h2>", status_code=404)
+        module = next((mod for mod in unit.modules if mod.name == module_name), None)
+        if module is None:
+            return HTMLResponse(content=f"<h2>Module {module_name} not found in unit {unit_name}</h2>", status_code=404)
+        value = module.update_behaviour.state if module.update_behaviour else "N/A"
+        value = f"{value:.2f}" if isinstance(value, float) else str(value)
+        return templates.TemplateResponse("module_value.html", {"request": request, "val": value})
+
+    @app.get("/show_unit/{unit_name}", response_class=HTMLResponse)
+    async def show_unit(request: Request, unit_name: str):
+        unit: Unit | None = next((unit for unit in simulation.units if unit.name == unit_name), None)
+        if unit is None:
+            return HTMLResponse(content=f"<h2>Unit {unit_name} not found</h2>", status_code=404)
+        return templates.TemplateResponse("show_unit.html", {"request": request, "unit": unit})
 
     return app
 
