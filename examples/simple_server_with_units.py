@@ -13,18 +13,15 @@ import logging
 async def setup(server: asyncua.Server):
 
 
-    simulation = Simulation(server, units=[], jobs=[])
+    simulation = Simulation(server)
 
     units = [
         FermentationTankExample(simulation, initial_vol=1000),
         BrightBeerTankExample(simulation, initial_vol=0)
     ]
 
-    jobs = deque([
-        TransferJob.new(source=units[0], target=units[1], amount=200, rate=20)
-    ])
-    simulation.units = units
-    simulation.jobs = jobs
+    for unit in units:
+        await simulation.add_unit(unit)
     asyncio.create_task(simulation.start_loop())
     asyncio.create_task(create_interface(simulation))
 
