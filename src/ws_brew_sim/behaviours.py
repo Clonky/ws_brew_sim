@@ -17,3 +17,10 @@ class NormalDistBehaviour(Behaviour):
     def update(self):
         new_val = random.gauss(self.mean, self.stddev)
         self.state = new_val
+
+class StaticBehaviour(Behaviour):
+    def __init__(self, initial_state):
+        super().__init__(initial_state)
+
+    def update(self):
+        pass

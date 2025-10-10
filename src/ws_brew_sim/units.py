@@ -2,9 +2,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from uuid import uuid4
 from .utils import NodeId
-from .behaviours import NormalDistBehaviour
+from .behaviours import NormalDistBehaviour, StaticBehaviour
 from .events import TransferEvent, Event
 from .jobs import JobState, TransferJob
+from .modules import Volume, Module
 from asyncua import Server
 from asyncua.common.node import Node
 from asyncua import ua
@@ -20,28 +21,6 @@ logger = logging.getLogger(__name__)
 TIME_NODE = ua.NodeId(2258, 0)
 
 
-class Module:
-    def __init__(self, name: str, node_id: NodeId, update_behaviour=None):
-        self.name = name
-        self.node_id = node_id
-        self.node = None
-        self.update_behaviour = update_behaviour
-
-    async def connect(self, server: Server):
-        if not self.node:
-            self.node = server.get_node(self.node_id)
-            await self.node.set_writable()
-            logger.info(f"Module {self.name} connected to node {self.node}")
-
-    async def run(self):
-        if self.update_behaviour:
-            self.update_behaviour.update()
-            if self.node is not None:
-                logger.debug("Updating node %s to state %s", self.node, self.update_behaviour.state)
-                await self.node.write_value(self.update_behaviour.state)
-
-    def register(self, unit: 'Unit'):
-        unit.register_module(self)
 
 
 class Unit:
@@ -126,11 +105,14 @@ class Unit:
 
 
 class Tank(Unit):
-    def __init__(self, name: str, node_id: ua.NodeId, simulation: Simulation, initial_vol = 0.0, modules: list[Module] = []):
+    def __init__(self, name: str, node_id: ua.NodeId, simulation: Simulation, initial_vol = 0, modules: list[Module] = []):
         super().__init__(name, node_id, simulation)
+        if not any(m.name == "Volume" for m in modules):
+            modules.append(Volume(initial_vol))
+        self.modules = modules
         self.job: TransferJob | None = None
         self.event: TransferEvent | None = None
-        self.volume = initial_vol
+        self.volume = next((m for m in self.modules if m.name == "Volume"), None)
 
     async def _handle_job(self):
         if self.job:
@@ -189,12 +171,14 @@ class Tank(Unit):
 class FermentationTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=1000):
         modules = [
-            Module("Temperature", ua.NodeId(6277, 15), NormalDistBehaviour(12, 0.5))
+            Module("Temperature", ua.NodeId(6277, 15), NormalDistBehaviour(12, 0.5)),
+            Volume(initial_vol)
         ]
         super().__init__("FermentationTank", ua.NodeId(5209, 15), simulation, modules=modules)
-        self.volume = initial_vol
 
 class BrightBeerTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=0):
-        super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation)
-        self.volume = initial_vol
+        modules = [
+            Volume(initial_vol)
+        ]
+        super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation, modules=modules)
