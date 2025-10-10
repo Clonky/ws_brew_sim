@@ -6,6 +6,6 @@ build-backend = "uv_build"
 name = "ws_brew_sim"
 version = "0.1.0"
 
-dependencies = ["asyncua", "logger", "asyncio", "fastapi", "uvicorn"]
+dependencies = ["asyncua", "logger", "asyncio", "fastapi", "uvicorn", "jinja2"]
 
 authors = [{ name = "Philip Schmid", email = "philip.schmid@tum.de" }]
