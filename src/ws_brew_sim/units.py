@@ -115,7 +115,7 @@ class Unit:
         etype = await server.nodes.base_event_type.get_child(f"{ws_basis_idx}:WSTransferEventType")
         filter_idx = await server.get_namespace_index("http://Implementation_Filter")
         logging.warning(filter_idx)
-        target = server.get_node(ua.NodeId(5209, filter_idx))
+        target = server.get_node(self.node_id)
         transfer_gen: EventGenerator = await server.get_event_generator(etype, target)
         return transfer_gen
 
@@ -153,8 +153,10 @@ class Tank(Unit):
                     source_material_id=None,
                     target_material_id=None
                 )
-                self.event.evgen.event.SetSourceQuantity = ua.Variant(int(self.volume - self.job.amount), ua.VariantType.UInt32) 
-                self.event.evgen.event.SetTargetQuantity = ua.Variant(int(self.job.target.volume + self.job.amount), ua.VariantType.UInt32)
+                set_source_quantity = max(0, self.volume - self.job.amount)
+                set_target_quantity = self.job.target.volume + self.job.amount
+                self.event.evgen.event.SetSourceQuantity = ua.Variant(int(set_source_quantity), ua.VariantType.UInt32) 
+                self.event.evgen.event.SetTargetQuantity = ua.Variant(int(set_target_quantity), ua.VariantType.UInt32)
                 self.job.state = JobState.RUNNING
             elif self.job.state == JobState.RUNNING:
                 # Perform transfer here
@@ -163,7 +165,7 @@ class Tank(Unit):
                 self.job.moved_volume += transfer_amount
                 logger.info(f"Transferring {transfer_amount}L from {self.name} to {self.job.target.name}. {self.job.moved_volume}/{self.job.amount}L moved.")
                 self.job.target.volume += transfer_amount
-                if self.job.moved_volume >= self.job.amount or abs(self.volume) <= 1e-3:
+                if self.job.moved_volume >= self.job.amount or abs(self.volume) == 0:
                     # Handle job completion
                     time = await self.simulation.server.get_node(TIME_NODE).read_value()
                     self.job.state = JobState.COMPLETED
@@ -195,4 +197,4 @@ class FermentationTankExample(Tank):
 class BrightBeerTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=0):
         super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation)
-        self.volunme = initial_vol
+        self.volume = initial_vol
