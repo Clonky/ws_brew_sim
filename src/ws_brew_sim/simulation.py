@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class Simulation:
-    def __init__(self, server: Server, units: list[Unit] = [], jobs: deque = deque([])):
+    def __init__(self, server: Server, units: list[Unit] = [], jobs: deque | None = deque([])):
         self.server = server
         self.state = "paused"
         self.units = units
@@ -25,6 +25,11 @@ class Simulation:
 
     def add_job(self, job: Job):
         self.jobs.append(job)
+
+    async def add_unit(self, unit: Unit):
+        self.units.append(unit)
+        await unit.connect(self.server)
+
 
     async def start_loop(self):
         logging.info("Starting simulation loop...")
