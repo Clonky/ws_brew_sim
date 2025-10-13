@@ -10,6 +10,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
 class Module:
     def __init__(self, name: str, node_id: NodeId | None, update_behaviour=None):
         self.name = name
@@ -31,8 +32,9 @@ class Module:
                 logger.debug("Updating node %s to state %s", self.node, self.update_behaviour.state)
                 await self.node.write_value(self.update_behaviour.state)
 
-    def register(self, unit: 'Unit'):
+    def register(self, unit: "Unit"):
         unit.register_module(self)
+
 
 class Volume(Module):
     def __init__(self, initial_volume: int = 0):
@@ -40,8 +42,42 @@ class Volume(Module):
 
     @property
     def volume(self) -> int:
-        return self.behaviour.state
-    
+        return self.update_behaviour.state
+
     @volume.setter
     def volume(self, value: int):
-        self.behaviour.state = value
+        self.update_behaviour.state = value
+
+    def __sub__(self, other):
+        if isinstance(other, (int)):
+            new_vol = self.volume - other
+            return new_vol
+        raise NotImplementedError("Subtraction only supported with int or float types.")
+
+    def __isub__(self, other):
+        if isinstance(other, (int)):
+            self.volume = self.volume - other
+            return self
+        raise NotImplementedError("In-place subtraction only supported with int or float types.")
+
+    def __add__(self, other):
+        if isinstance(other, (int)):
+            new_vol = self.volume + other
+            return new_vol
+        raise NotImplementedError("Addition only supported with int or float types.")
+
+    def __iadd__(self, other):
+        if isinstance(other, (int)):
+            self.volume = self.volume + other
+            return self
+        raise NotImplementedError("In-place addition only supported with int or float types.")
+
+    def __gt__(self, other):
+        if isinstance(other, (int)):
+            return self.volume > other
+        raise NotImplementedError("Greater than comparison only supported with int or float types.")
+
+    def __lt__(self, other):
+        if isinstance(other, (int)):
+            return self.volume < other
+        raise NotImplementedError("Less than comparison only supported with int or float types.")

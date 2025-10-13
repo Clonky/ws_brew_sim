@@ -21,10 +21,8 @@ logger = logging.getLogger(__name__)
 TIME_NODE = ua.NodeId(2258, 0)
 
 
-
-
 class Unit:
-    def __init__(self, name: str, node_id: ua.NodeId, simulation: 'Simulation', modules: list[Module] = []):
+    def __init__(self, name: str, node_id: ua.NodeId, simulation: "Simulation", modules: list[Module] = []):
         self.asset_id = str(uuid4())[:12]
         self.serial_number = str(uuid4())[:12]
         self.name = name
@@ -75,7 +73,9 @@ class Unit:
             logger.info(f"Module {self.name} connected to node {self.node}")
             await self._set_internal_static_state()
             await self.setup_evgen(server)
-            event = await TransferEvent.from_nodes(self.node, self.node, "batch_001", self.evgen["TransferEvent"], server)
+            event = await TransferEvent.from_nodes(
+                self.node, self.node, "batch_001", self.evgen["TransferEvent"], server
+            )
             self.curr_event = event
 
         for module in self.modules:
@@ -88,7 +88,6 @@ class Unit:
             transfer_gen = await self.create_transfer_event_generator(server)
             self.evgen["TransferEvent"] = transfer_gen
 
-
     async def create_transfer_event_generator(self, server: Server):
         ws_basis_idx = await server.get_namespace_index("http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/")
         etype = await server.nodes.base_event_type.get_child(f"{ws_basis_idx}:WSTransferEventType")
@@ -98,14 +97,15 @@ class Unit:
         transfer_gen: EventGenerator = await server.get_event_generator(etype, target)
         return transfer_gen
 
-
     async def run(self):
         for module in self.modules:
             await module.run()
 
 
 class Tank(Unit):
-    def __init__(self, name: str, node_id: ua.NodeId, simulation: Simulation, initial_vol = 0, modules: list[Module] = []):
+    def __init__(
+        self, name: str, node_id: ua.NodeId, simulation: Simulation, initial_vol=0, modules: list[Module] = []
+    ):
         super().__init__(name, node_id, simulation)
         if not any(m.name == "Volume" for m in modules):
             modules.append(Volume(initial_vol))
@@ -119,44 +119,21 @@ class Tank(Unit):
             if self.job.state == JobState.PENDING:
                 logger.info(f"Starting job {self.job} on tank {self.name}")
                 # Initialize events over here
-                target = self.job.target
                 time = await self.simulation.server.get_node(TIME_NODE).read_value()
                 if self.evgen.get("TransferEvent") is None:
                     self.evgen["TransferEvent"] = await self.create_transfer_event_generator(self.simulation.server)
-                self.event = TransferEvent(
-                    source_asset_id=self.job.source.asset_id,
-                    target_asset_id=self.job.target.asset_id,
-                    source_batch_id="batch_001",
-                    target_batch_id="batch_001",
-                    source_set_amount=self.volume - self.job.amount,
-                    target_set_amount=self.job.target.volume + self.job.amount,
-                    start_time=time,
-                    evgen=self.evgen["TransferEvent"],
-                    source_material_id=None,
-                    target_material_id=None
-                )
-                set_source_quantity = max(0, self.volume - self.job.amount)
-                set_target_quantity = self.job.target.volume + self.job.amount
-                self.event.evgen.event.SetSourceQuantity = ua.Variant(int(set_source_quantity), ua.VariantType.UInt32) 
-                self.event.evgen.event.SetTargetQuantity = ua.Variant(int(set_target_quantity), ua.VariantType.UInt32)
+                self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
                 self.job.state = JobState.RUNNING
             elif self.job.state == JobState.RUNNING:
                 # Perform transfer here
-                transfer_amount = min(self.job.rate, self.volume)
-                self.volume -= transfer_amount
-                self.job.moved_volume += transfer_amount
-                logger.info(f"Transferring {transfer_amount}L from {self.name} to {self.job.target.name}. {self.job.moved_volume}/{self.job.amount}L moved.")
-                self.job.target.volume += transfer_amount
-                if self.job.moved_volume >= self.job.amount or abs(self.volume) == 0:
-                    # Handle job completion
-                    time = await self.simulation.server.get_node(TIME_NODE).read_value()
-                    self.job.state = JobState.COMPLETED
-                    self.event.evgen.event.EndTime = time
-                    self.event.evgen.event.SourceQuantity = ua.Variant(self.volume, ua.VariantType.UInt32)
-                    self.event.evgen.event.TargetQuantity = ua.Variant(int(self.job.target.volume), ua.VariantType.UInt32)
-                    await self.event.trigger()
-                    self.event = None
-                    self.job = None
+                self.job.run()
+            elif self.job.state == JobState.COMPLETED:
+                logger.info(f"Job {self.job} on tank {self.name} completed")
+                time = await self.simulation.server.get_node(TIME_NODE).read_value()
+                self.event.add_completion_info(time, self.job.source, self.job.target)
+                await self.event.trigger()
+                self.event = None
+                self.job = None
 
     async def run(self):
         for module in self.modules:
@@ -170,15 +147,11 @@ class Tank(Unit):
 
 class FermentationTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=1000):
-        modules = [
-            Module("Temperature", ua.NodeId(6277, 15), NormalDistBehaviour(12, 0.5)),
-            Volume(initial_vol)
-        ]
+        modules = [Module("Temperature", ua.NodeId(6277, 15), NormalDistBehaviour(12, 0.5)), Volume(initial_vol)]
         super().__init__("FermentationTank", ua.NodeId(5209, 15), simulation, modules=modules)
+
 
 class BrightBeerTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=0):
-        modules = [
-            Volume(initial_vol)
-        ]
+        modules = [Volume(initial_vol)]
         super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation, modules=modules)
