@@ -1,11 +1,11 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from uuid import uuid4
-from .utils import NodeId
-from .behaviours import NormalDistBehaviour, StaticBehaviour
+from .behaviours import NormalDistBehaviour
 from .events import TransferEvent, Event
 from .jobs import JobState, TransferJob
 from .modules import Volume, Module
+from .statemachine import StateMachineTree
 from asyncua import Server
 from asyncua.common.node import Node
 from asyncua import ua
@@ -54,25 +54,32 @@ class Unit:
     def register_module(self, module: Module):
         self.modules.append(module)
 
-    def start_job(self):
+    def _start_job(self):
         if not self.job:
             associated_jobs = self.simulation.messages.get(self.name, [])
             if associated_jobs:
                 self.job = associated_jobs
 
+    async def _set_static_vals(self):
+        asset_id_node = await self.node.get_child(["2:Identification", "2:AssetId"])
+        await asset_id_node.write_value(self.asset_id)
+        serial_number_node = await self.node.get_child(["2:Identification", "2:SerialNumber"])
+        await serial_number_node.write_value(self.serial_number)
+
+    async def _set_up_statemachines(self):
+        self.statemachine = await StateMachineTree.build_tree(self.simulation.server, self.node_id)
+
     async def _set_internal_static_state(self):
         if self.node:
-            asset_id_node = await self.node.get_child(["2:Identification", "2:AssetId"])
-            await asset_id_node.write_value(self.asset_id)
-            serial_number_node = await self.node.get_child(["2:Identification", "2:SerialNumber"])
-            await serial_number_node.write_value(self.serial_number)
+            await self._set_static_vals()
+            await self._set_up_statemachines()
 
     async def connect(self, server: Server):
         if not self.node:
             self.node = server.get_node(self.node_id)
             logger.info(f"Module {self.name} connected to node {self.node}")
             await self._set_internal_static_state()
-            await self.setup_evgen(server)
+            await self._setup_evgen(server)
             event = await TransferEvent.from_nodes(
                 self.node, self.node, "batch_001", self.evgen["TransferEvent"], server
             )
@@ -81,14 +88,14 @@ class Unit:
         for module in self.modules:
             await module.connect(server)
 
-    async def setup_evgen(self, server: Server):
+    async def _setup_evgen(self, server: Server):
         if not self.node:
             await self.connect(server)
         else:
-            transfer_gen = await self.create_transfer_event_generator(server)
+            transfer_gen = await self._create_transfer_event_generator(server)
             self.evgen["TransferEvent"] = transfer_gen
 
-    async def create_transfer_event_generator(self, server: Server):
+    async def _create_transfer_event_generator(self, server: Server):
         ws_basis_idx = await server.get_namespace_index("http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/")
         etype = await server.nodes.base_event_type.get_child(f"{ws_basis_idx}:WSTransferEventType")
         filter_idx = await server.get_namespace_index("http://Implementation_Filter")
