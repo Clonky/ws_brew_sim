@@ -1,6 +1,6 @@
 <h2>List of registered Units</h2>
-<ul>
+<ul class="flexlist flexcol">
     {% for unit in units %}
-        <li><button hx-get="/show_unit/{{ unit.name }}" hx-swap="innerHTML" hx-target="#main-content">{{ unit.name }}</button></li>
+        <li><button class="navbutton" hx-get="/show_unit/{{ unit.name }}" hx-swap="innerHTML" hx-target="#main-content">{{ unit.name }}</button></li>
     {% endfor %}
 </ul>

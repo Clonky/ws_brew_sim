@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from uuid import uuid4
 import uvicorn
@@ -10,6 +11,7 @@ from ws_brew_sim.jobs import TransferJob, JobState
     
 def create_app(simulation: Simulation):
     app = FastAPI()
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
     templates = Jinja2Templates(directory="templates")
 
@@ -26,6 +28,10 @@ def create_app(simulation: Simulation):
     @app.get("/", response_class=HTMLResponse)
     async def read_root(request: Request):
         return templates.TemplateResponse("index.html", {"request": request})
+
+    @app.get("/landing", response_class=HTMLResponse)
+    async def landing(request: Request):
+        return templates.TemplateResponse("landing.html", {"request": request})
 
     @app.get("/units", response_class=HTMLResponse)
     async def index_units(request: Request):
