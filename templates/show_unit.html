@@ -1,19 +1,33 @@
 <h2>Unit Details</h2>
 <p><strong>Name:</strong> {{ unit.name }}</p>
 <p><strong>ID:</strong> {{ unit.serial_number }}</p>
-<table>
-    <thead>
-        <tr>
-            <th>Module</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for module in unit.modules %}
+<div class="flexlist">
+    <table>
+        <thead>
             <tr>
-                <td>{{ module.name }}</td>
-                <td hx-get="/value/{{unit.name}}/{{module.name}}" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</td>
+                <th>Module</th>
+                <th>Status</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for module in unit.modules %}
+                <tr>
+                    <td>{{ module.name }}</td>
+                    <td hx-get="/value/{{unit.name}}/{{module.name}}" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="flexlist flexcol">
+        <h3>State Machine</h3>
+        {% with statetree=unit.statemachine %}
+        {% if statetree %}
+            {% include "_statetree.html" %}
+        {% else %}
+            <p>No state machine available.</p>
+        {% endif %}
+        {% endwith %}
+
+    </div>
+</div>

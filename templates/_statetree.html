@@ -1,0 +1,20 @@
+<ul class="flexlist">
+    {% for state in statetree.root.possible_states %}
+        {% with state=state %}
+            <li class="flexlist flexcol">
+                <div>
+                {% include "_statebutton.html" %} 
+        {% endwith %}
+                </div>
+                {% if state.substates %}
+                <ul class="flexlist flexcol">
+                    {% for isubstate in state.substates.possible_states %}
+                        {% with state=isubstate %}
+                        {% include "_statebutton.html" %}
+                        {% endwith %}
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </li>
+    {% endfor %}
+</ul>

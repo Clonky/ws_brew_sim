@@ -1,0 +1,5 @@
+{% if state.active %}
+    <button class="statebutton active" hx-post="/unit/{{unit.name}}/state/?state_name={{state.name}}&action=deactivate" hx-target="#main-content" hx-swap="innerHTML">{{ state.name }}</button>
+{% else %}
+    <button class="statebutton" hx-post="/unit/{{unit.name}}/state/?state_name={{state.name}}&action=activate" hx-target="#main-content" hx-swap="innerHTML">{{ state.name }}</button>
+{% endif %}

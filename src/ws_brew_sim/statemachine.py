@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from asyncua import Server
 from asyncua.ua import NodeId
 from asyncua.common import Node
@@ -18,6 +18,9 @@ class State:
     name: str
     node: Node
     state_number: int
+    curr_state_node: Node
+    active: bool = False
+    substates: StateMachineLevel = field(default_factory=list)
 
     def __repr__(self):
         return f"State(name={self.name}, node_id={self.node.nodeid}, state_number={self.state_number})"
@@ -33,7 +36,6 @@ class StateMachineLevel:
     curr_state: Node
     possible_states: list[State]
     possible_transitions: list[Transition]
-    substates: list[StateMachineLevel] = None
 
     async def write_state(self, state_name: str) -> None:
         state = next((state for state in self.possible_states if state.name == state_name), None)
@@ -42,6 +44,7 @@ class StateMachineLevel:
             await self.curr_state.write_value(state.state_number)
         else:
             raise ValueError(f"State {state_name} not found in possible states.")
+
 
 @dataclass
 class StateMachineTree:
@@ -57,15 +60,23 @@ class StateMachineTree:
     @staticmethod
     async def get_states_and_transitions(server: Server, parent_node_id: NodeId):
         states_and_transitions = await server.get_node(parent_node_id).get_children()
+        current_state_node = await server.get_node(parent_node_id).get_child("0:CurrentState")
         states = [istate for istate in states_and_transitions if await istate.read_type_definition() ==  NodeId(STATE_ID)]
         states = [State(
             name = (await istate.read_display_name()).Text,
             node=istate,
-            state_number= await (await istate.get_child("0:StateNumber")).read_value()
+            state_number= await (await istate.get_child("0:StateNumber")).read_value(),
+            curr_state_node=current_state_node
             ) for istate in states
         ]
-        for state in states:
-            logger.info("Adding state: %s", state)
+        substates = [istate for istate in states_and_transitions if
+                      await istate.read_type_definition() !=  NodeId(STATE_ID) and
+                      await istate.read_type_definition() !=  NodeId(TRANSITION_ID) and
+                      await istate.read_type_definition() !=  NodeId(CURRENT_STATE_ID)]
+        if substates:
+            for istate, isubstate in zip(states, substates):
+                logger.info("Adding state: %s", istate)
+                istate.substates = await StateMachineTree.get_states_and_transitions(server, isubstate.nodeid)
         transitions = [itransition for itransition in states_and_transitions if await itransition.read_type_definition() ==  NodeId(TRANSITION_ID)]
         transitions = [Transition(
             name = (await itransition.read_display_name()).Text,
@@ -73,12 +84,51 @@ class StateMachineTree:
             transition_number= await (await itransition.get_child("0:TransitionNumber")).read_value()
             ) for itransition in transitions
         ]
-        current_state_node = await server.get_node(parent_node_id).get_child("0:CurrentState")
-        # If its neither State, nor Transition, nor CurrentState, it must be a substate (not necessarily always true)
-        substates = [istate for istate in states_and_transitions if
-                      await istate.read_type_definition() !=  NodeId(STATE_ID) and
-                      await istate.read_type_definition() !=  NodeId(TRANSITION_ID) and
-                      await istate.read_type_definition() !=  NodeId(CURRENT_STATE_ID)]
-        # Go into recursive mode here
-        substates = [await StateMachineTree.get_states_and_transitions(server, istate.nodeid) for istate in substates]
-        return StateMachineLevel(current_state_node, states, transitions, substates)
+        return StateMachineLevel(current_state_node, states, transitions)
+
+    def __getitem__(self, name:str) -> State | None:
+        states = self.get_all_states()
+        return next((istate for istate in states if istate.name == name), None)
+
+    def disable_all_states(self):
+        states = self.get_all_states()
+        for state in states:
+            state.active = False
+
+    def get_all_states(self) -> list[State]:
+        def collect_states(level: StateMachineLevel) -> list[State]:
+            states = level.possible_states.copy()
+            for state in level.possible_states:
+                if state.substates:
+                    states.extend(collect_states(state.substates))
+            return states
+
+        return collect_states(self.root)
+
+    def get_path_to_state(self, target_state_name: str) -> list[State] | None:
+        def find_path(level: StateMachineLevel, path: list[State]) -> list[State] | None:
+            for state in level.possible_states:
+                new_path = path + [state]
+                if state.name == target_state_name:
+                    return new_path
+                if state.substates:
+                    result = find_path(state.substates, new_path)
+                    if result:
+                        return result
+            return None
+
+        return find_path(self.root, [])
+
+
+
+    def recursively_get_states(self, state: State, collection: list[State]):
+        if state.substates == []:
+            collection.append(state)
+            return collection
+        else:
+            collection.append(state)
+            for istate in state.substates.possible_states:
+                return collection + self.recursively_get_states(istate, collection)
+
+
+        

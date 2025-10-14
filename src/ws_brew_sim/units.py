@@ -34,6 +34,7 @@ class Unit:
         self.evgen = dict()
         self.event: Event | None = None
         self._populate_modules()
+        self.statemachine = None
 
     def __repr__(self):
         return f"Unit(name={self.name}, node_id={self.node_id}"
