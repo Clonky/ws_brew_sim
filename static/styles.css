@@ -98,12 +98,36 @@ thead {
     grid-template-columns: 1fr 1fr;
     grid-auto-rows: auto;
     gap: 2em;
-    border: 1px solid var(--primary-color);
     padding: 1em;
     margin: 1em;
 }
 
+.jobform {
+    border: 1px solid var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    padding: 1em 3em 1em 3em;
+}
+
 .inputline {
     display: flex;
+    align-items: center;
     gap: 2em;
+}
+
+.inputline label {
+    flex: 0 0 200px;
+    text-align: right;
+}
+
+.inputline input,
+.inputline select {
+    padding: 6px;
+    width: 160px;
+    box-sizing: border-box;
+    align-items: flex-end;
+}
+
+.inputline .navbutton {
+    width: 120px;
 }

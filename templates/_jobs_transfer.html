@@ -1,0 +1,28 @@
+<form class="jobform" hx-post="/transfer_job">
+    <h3>TransferJob</h3>
+    <div class="inputline">
+        <label for="source">Choose a source:</label>
+        <select name="source_name" id="source">
+            {% for unit in units %}
+            <option value="{{unit.name}}">{{unit.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="inputline">
+        <label for="target">Choose a target:</label>
+        <select name="target_name" id="target">
+            {% for unit in units %}
+            <option value="{{unit.name}}">{{unit.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="inputline">
+        <label for="amount">Transfer amount:</label>
+        <input type="number" name="amount" id="amount"/>
+    </div>
+    <div class="inputline">
+        <label for="rate">Transfer rate:</label>
+        <input type="number" name="rate" id="rate"/>
+    </div>
+    <button class="navbutton" type="submit">Submit</button>
+</form>
