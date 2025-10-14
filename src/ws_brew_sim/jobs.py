@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class JobState(Enum):
     PENDING = "Pending"
     RUNNING = "Running"
+    PAUSED = "Paused"
     COMPLETED = "Completed"
     FAILED = "Failed"
 

@@ -1,8 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from uuid import uuid4
+from typing import Annotated
 import uvicorn
 from ws_brew_sim.units import Unit
 from ws_brew_sim.simulation import Simulation
@@ -17,7 +18,7 @@ def create_app(simulation: Simulation):
     templates = Jinja2Templates(directory="templates")
 
     @app.post("/transfer_job")
-    async def create_transfer_job(source_name: str, target_name: str, amount: int, rate: int):
+    async def create_transfer_job(source_name: Annotated[str, Form()], target_name: Annotated[str, Form()], amount: Annotated[int, Form()], rate: Annotated[int, Form()]):
         source = next((unit for unit in simulation.units if unit.name == source_name), None)
         target = next((unit for unit in simulation.units if unit.name == target_name), None)
         if source is None or target is None:
@@ -73,6 +74,11 @@ def create_app(simulation: Simulation):
         if unit is None:
             return HTMLResponse(content=f"<h2>Unit {unit_name} not found</h2>", status_code=404)
         return templates.TemplateResponse("show_unit.html", {"request": request, "unit": unit})
+
+    @app.get("/jobs", response_class=HTMLResponse)
+    async def jobs(request: Request):
+        units = simulation.units
+        return templates.TemplateResponse("_jobs.html", {"request": request, "units": units})
 
     return app
 

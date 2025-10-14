@@ -119,6 +119,11 @@ class StateMachineTree:
 
         return find_path(self.root, [])
 
+    def is_in_production(self):
+        states = self.get_path_to_state("Production")
+        production = states[-1]
+        return production.active
+
 
 
     def recursively_get_states(self, state: State, collection: list[State]):

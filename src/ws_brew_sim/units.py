@@ -132,7 +132,7 @@ class Tank(Unit):
                     self.evgen["TransferEvent"] = await self.create_transfer_event_generator(self.simulation.server)
                 self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
                 self.job.state = JobState.RUNNING
-            elif self.job.state == JobState.RUNNING:
+            elif self.job.state == JobState.RUNNING and self.statemachine.is_in_production():
                 # Perform transfer here
                 self.job.run()
             elif self.job.state == JobState.COMPLETED:
