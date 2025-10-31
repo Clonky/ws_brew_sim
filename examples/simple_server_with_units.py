@@ -3,7 +3,7 @@ import asyncio
 import asyncua
 from collections import deque
 from ws_brew_sim.simulation import Simulation
-from ws_brew_sim.units import FermentationTankExample, BrightBeerTankExample
+from ws_brew_sim.units import FermentationTankExample, BrightBeerTankExample, SheetFilterExample
 from ws_brew_sim.jobs import TransferJob
 from ws_brew_sim.interface import create_interface
 from asyncua import ua
@@ -17,7 +17,8 @@ async def setup(server: asyncua.Server):
 
     units = [
         FermentationTankExample(simulation, initial_vol=1000),
-        BrightBeerTankExample(simulation, initial_vol=0)
+        BrightBeerTankExample(simulation, initial_vol=0),
+        SheetFilterExample(simulation),
     ]
 
     for unit in units:

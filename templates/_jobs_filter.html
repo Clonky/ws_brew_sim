@@ -1,0 +1,20 @@
+<form class="jobform" hx-post="/filter_job">
+    <h3>FilterJob</h3>
+    <div class="inputline">
+        <label for="unit">Choose a unit:</label>
+        <select name="unit" id="unit">
+            {% for unit in units %}
+            <option value="{{unit.name}}">{{unit.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="inputline">
+        <label for="amount">Filter amount:</label>
+        <input type="number" name="amount" id="amount"/>
+    </div>
+    <div class="inputline">
+        <label for="batch_id">Batch Id:</label>
+        <input type="text" name="batch_id" id="batch_id"/>
+    </div>
+    <button class="navbutton" type="submit">Submit</button>
+</form>

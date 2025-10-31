@@ -267,14 +267,6 @@
 		<DisplayName>WSUnitProcedureEventType</DisplayName>
 		<Description>After completing a unit procedure (e.g. mashing, lautering) on a brewing unit, a UnitProcedureEvent is generated, which contains information such as the procedure name, start and end timestamps and involved unit or material references.</Description>
 		<References>
-			<Reference ReferenceType="HasProperty">ns=0;i=2042</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2043</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2044</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2045</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2046</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2047</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2050</Reference>
-			<Reference ReferenceType="HasProperty">ns=0;i=2051</Reference>
 			<Reference ReferenceType="HasSubtype" IsForward="false">ns=0;i=2041</Reference>
 			<Reference ReferenceType="HasProperty">ns=13;i=60006</Reference>
 			<Reference ReferenceType="HasProperty">ns=13;i=60007</Reference>

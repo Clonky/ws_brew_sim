@@ -1,4 +1,7 @@
 from __future__ import annotations
+from asyncua.server.event_generator import EventGenerator
+from .units import SheetFilter
+from .events import Event
 import logging
 from typing import TYPE_CHECKING
 from dataclasses import dataclass
@@ -24,6 +27,9 @@ class Job:
     name: str
     job_id: str
     state: JobState = JobState.PENDING
+
+    def is_finished(self) -> bool:
+        return self.state == JobState.COMPLETED
 
 
 @dataclass(kw_only=True)
@@ -56,3 +62,38 @@ class TransferJob(Job):
         self.target.volume += transfer_amount
         if self.moved_volume >= self.amount or abs(self.source.volume.volume) == 0:
             self.state = JobState.COMPLETED
+
+    def _finish_requirement(self) -> bool:
+        return self.moved_volume >= self.amount or abs(self.source.volume.volume) == 0
+
+@dataclass(kw_only=True)
+class TransferJobLongRunning(TransferJob):
+
+    def _finish_requirement(self) -> bool:
+        return self.moved_volume >= self.amount
+
+
+
+@dataclass(kw_only=True)
+class ProcessingJob(Job):
+    batch_id: str
+
+
+@dataclass(kw_only=True)
+class FilterJob(ProcessingJob):
+    filter_rate: int = 10
+    amount_filtered: int = 0
+    amount_to_filter: int
+
+    def run(self, unit: SheetFilter):
+        # Simulate filtering process
+        if self.state == JobState.RUNNING:
+            move_amount = min(self.filter_rate, unit.input_buffer)
+            unit.input_buffer -= move_amount
+            unit.output_buffer += move_amount
+            self.amount_filtered += move_amount
+            if self._finish_requirement():
+                self.state = JobState.COMPLETED
+        
+    def _finish_requirement(self) -> bool:
+        return self.amount_filtered >= self.amount_to_filter

@@ -1,4 +1,5 @@
 import random
+import time
 
 
 class Behaviour:
@@ -24,3 +25,15 @@ class StaticBehaviour(Behaviour):
 
     def update(self):
         pass
+
+class DurationTimer(Behaviour):
+
+    def __init__(self, duration: float = 0.0):
+        super().__init__(initial_state=duration)
+        self.last_update_time = time.time()
+
+    def update(self):
+        current_time = time.time()
+        elapsed_time = current_time - self.last_update_time
+        self.state += elapsed_time
+        self.last_update_time = current_time

@@ -6,7 +6,7 @@ from asyncua.common import Node
 from asyncua import ua
 
 if TYPE_CHECKING:
-    from .jobs import TransferJob
+    from .jobs import TransferJob, ProcessingJob
     from .units import Unit
 
 
@@ -59,10 +59,10 @@ class TransferEvent(Event):
         if target_material_id:
             evgen.event.TargetMaterialId = target_material_id
 
-    def add_completion_info(self, end_time, source: Unit, target: Unit):
+    def add_completion_info(self, job: TransferJob, end_time):
         self.evgen.event.EndTime = end_time
-        self.evgen.event.SourceQuantity = ua.Variant(source.volume.volume, ua.VariantType.UInt32)
-        self.evgen.event.TargetQuantity = ua.Variant(int(target.volume.volume), ua.VariantType.UInt32)
+        self.evgen.event.SourceQuantity = ua.Variant(job.source.volume.volume, ua.VariantType.UInt32)
+        self.evgen.event.TargetQuantity = ua.Variant(int(job.target.volume.volume), ua.VariantType.UInt32)
 
     @classmethod
     async def from_nodes(
@@ -113,3 +113,29 @@ class TransferEvent(Event):
 
     async def trigger(self):
         await self.evgen.trigger()
+
+    
+class UnitProcedureEvent(Event):
+    def __init__(self, unit: Unit, procedure_name: str, start_time: float, evgen: EventGenerator):
+        self.unit = unit
+        self.procedure_name = procedure_name
+        self.start_time = start_time
+        self.evgen = evgen
+
+    @classmethod
+    async def from_job(cls, job: ProcessingJob, evgen: EventGenerator, unit: Unit, batch_id: str):
+        event = cls(
+            unit=job.unit,
+            procedure_name=job.name,
+            start_time=curr_time,
+            evgen=evgen,
+        )
+        event.evgen.event.BatchId = batch_id
+        event.evgen.event.AssetId = unit.asset_id
+        event.evgen.event.StartTime = await unit._get_servertime()
+        return event
+
+
+    async def add_completion_info(self, job: ProcessingJob, end_time):
+        self.evgen.event.EndTime = end_time
+

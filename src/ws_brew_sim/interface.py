@@ -7,7 +7,7 @@ from typing import Annotated
 import uvicorn
 from ws_brew_sim.units import Unit
 from ws_brew_sim.simulation import Simulation
-from ws_brew_sim.jobs import TransferJob, JobState
+from ws_brew_sim.jobs import TransferJob, JobState, FilterJob
 from asyncua import ua
 
     
@@ -26,6 +26,23 @@ def create_app(simulation: Simulation):
         job = TransferJob(name=source_name, job_id=str(uuid4()), state=JobState.PENDING, source=source, target=target, amount=amount, rate=rate)
         simulation.add_job(job)
         return {"message": f"Transfer job from {source_name} to {target_name} added."}
+    
+    @app.post("/filter_job")
+    async def create_procedure_job(unit_name: Annotated[str, Form()], procedure_name: Annotated[str, Form()], batch_id: Annotated[str, Form()], amount: Annotated[int, Form()]):
+        unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
+        if unit is None:
+            return {"error": "Unit not found"}
+        job = FilterJob(
+            name=unit_name,
+            job_id=str(uuid4()),
+            state=JobState.PENDING,
+            batch_id=batch_id,
+            filter_rate=10,
+            amount_filtered=0,
+            amount_to_filter=amount,
+            )
+        simulation.add_job(job)
+        return {"message": f"Procedure job {procedure_name} for unit {unit_name} added."}
 
     @app.get("/", response_class=HTMLResponse)
     async def read_root(request: Request):

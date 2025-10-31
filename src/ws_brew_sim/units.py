@@ -1,9 +1,9 @@
 from __future__ import annotations
+from collections import deque
 from typing import TYPE_CHECKING
 from uuid import uuid4
-from .behaviours import NormalDistBehaviour
-from .events import TransferEvent, Event
-from .jobs import JobState, TransferJob
+from .behaviours import NormalDistBehaviour, DurationTimer
+from .events import TransferEvent, Event, UnitProcedureEvent
 from .modules import Volume, Module
 from .statemachine import StateMachineTree
 from asyncua import Server
@@ -15,6 +15,7 @@ import logging
 
 if TYPE_CHECKING:
     from .simulation import Simulation
+    from .jobs import JobState, TransferJob, ProcessingJob, Job
 
 logger = logging.getLogger(__name__)
 
@@ -44,6 +45,10 @@ class Unit:
             first_job = self.simulation.jobs[0]
             if first_job.name == self.name:
                 self.job = self.simulation.jobs.popleft()
+
+    async def _get_servertime(self) -> float:
+        time_node = await self.simulation.server.get_node(TIME_NODE)
+        return await time_node.read_value()
 
     def _handle_job(self):
         pass
@@ -90,20 +95,21 @@ class Unit:
             await module.connect(server)
 
     async def _setup_evgen(self, server: Server):
-        if not self.node:
-            await self.connect(server)
-        else:
-            transfer_gen = await self._create_transfer_event_generator(server)
-            self.evgen["TransferEvent"] = transfer_gen
+        pass
 
     async def _create_transfer_event_generator(self, server: Server):
         ws_basis_idx = await server.get_namespace_index("http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/")
         etype = await server.nodes.base_event_type.get_child(f"{ws_basis_idx}:WSTransferEventType")
-        filter_idx = await server.get_namespace_index("http://Implementation_Filter")
-        logging.warning(filter_idx)
         target = server.get_node(self.node_id)
         transfer_gen: EventGenerator = await server.get_event_generator(etype, target)
         return transfer_gen
+
+    async def _create_process_event_generator(self, server: Server):
+        ws_brew_idx = await server.get_namespace_index("http://opcfoundation.org/UA/WeihenstephanStandards/WSBrew/")
+        etype = await server.nodes.base_event_type.get_child(f"{ws_brew_idx}:WSUnitProcedureEventType")
+        target = server.get_node(self.node_id)
+        process_gen: EventGenerator = await server.get_event_generator(etype, target)
+        return process_gen
 
     async def run(self):
         for module in self.modules:
@@ -137,11 +143,18 @@ class Tank(Unit):
                 self.job.run()
             elif self.job.state == JobState.COMPLETED:
                 logger.info(f"Job {self.job} on tank {self.name} completed")
-                time = await self.simulation.server.get_node(TIME_NODE).read_value()
+                time = await self._get_servertime()
                 self.event.add_completion_info(time, self.job.source, self.job.target)
                 await self.event.trigger()
                 self.event = None
                 self.job = None
+
+    async def _setup_evgen(self, server: Server):
+        if not self.node:
+            await self.connect(server)
+        else:
+            transfer_gen = await self._create_transfer_event_generator(server)
+            self.evgen["TransferEvent"] = transfer_gen
 
     async def run(self):
         for module in self.modules:
@@ -163,3 +176,64 @@ class BrightBeerTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=0):
         modules = [Volume(initial_vol)]
         super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation, modules=modules)
+
+class SheetFilter(Unit):
+    def __init__(self, simulation: Simulation, nodeid: ua.NodeId, modules: list[Module] = []):
+        super().__init__("SheetFilter", nodeid, simulation, modules=modules)
+        self.input_buffer = 0.0
+        self.output_buffer = 0.0
+        self.jobs: deque[Job] = deque()
+        self.job: Job | None = None
+
+    async def run(self):
+        for module in self.modules:
+            await module.run()
+        if self.job:
+            await self._handle_job()
+        else:
+            self._check_jobs()
+        await asyncio.sleep(0.5)
+
+    async def _setup_evgen(self, server: Server):
+        if not self.node:
+            await self.connect(server)
+        else:
+            transfer_gen = await self._create_transfer_event_generator(server)
+            process_gen = await self._create_process_event_generator(server)
+            self.evgen["TransferEvent"] = transfer_gen
+            self.evgen["ProcessEvent"] = process_gen
+
+    async def _handle_job(self):
+        if self.job is None and self.jobs:
+            self.job = self.jobs.popleft()
+            logger.info(f"Starting job {self.job} on SheetFilter {self.name}")
+            self.job.state = JobState.RUNNING
+            await self._setup_events()
+        elif self.job and self.job.state == JobState.RUNNING:
+            self.job.run(self)
+        elif self.job.is_finished():
+            logger.info(f"Job {self.job} on SheetFilter {self.name} completed")
+            self.event.add_completion_info(self.job, await self._get_servertime())
+            await self.event.trigger()
+            self.job = None
+            self.event = None
+
+    async def _setup_event(self):
+        if type(self.job) == ProcessingJob:
+            self.event = await UnitProcedureEvent.from_job(
+                self.job, self.evgen["ProcessEvent"], self, self.job.batch_id
+            )
+        elif type(self.job) == TransferJob:
+            time = await self._get_servertime()
+            self.event = await TransferEvent.from_job(
+                self.job, self.evgen["TransferEvent"], time, "batch_001"
+            )
+
+class SheetFilterExample(SheetFilter):
+    def __init__(self, simulation: Simulation):
+        modules = [
+            Module("Pressure", ua.NodeId(6151, 15), NormalDistBehaviour(1.5, 0.1)),
+            Module("PowerOnDuration", ua.NodeId(6268, 15), DurationTimer(0.0)),
+            Module("TurbidityOutlet", ua.NodeId(6153, 15), NormalDistBehaviour(1.5, 0.1)),
+                ]
+        super().__init__(simulation, ua.NodeId(5100, 15), modules=modules)
