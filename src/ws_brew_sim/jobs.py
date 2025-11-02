@@ -1,7 +1,4 @@
 from __future__ import annotations
-from asyncua.server.event_generator import EventGenerator
-from .units import SheetFilter
-from .events import Event
 import logging
 from typing import TYPE_CHECKING
 from dataclasses import dataclass
@@ -9,7 +6,7 @@ from enum import Enum
 from uuid import uuid4
 
 if TYPE_CHECKING:
-    from .units import Unit
+    from .units import Unit, SheetFilter
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +49,7 @@ class TransferJob(Job):
             rate=rate,
         )
 
-    def run(self):
+    def run(self, unit: Unit):
         transfer_amount = min(self.rate, self.source.volume.volume)
         self.source.volume -= transfer_amount
         self.moved_volume += transfer_amount
@@ -88,12 +85,11 @@ class FilterJob(ProcessingJob):
     def run(self, unit: SheetFilter):
         # Simulate filtering process
         if self.state == JobState.RUNNING:
-            move_amount = min(self.filter_rate, unit.input_buffer)
-            unit.input_buffer -= move_amount
-            unit.output_buffer += move_amount
-            self.amount_filtered += move_amount
-            if self._finish_requirement():
+            move_amount = min(self.filter_rate, unit.volume.volume)
+            unit.volume_filtered += move_amount
+            if self._finish_requirement(unit):
                 self.state = JobState.COMPLETED
+                unit.volume_filtered = 0
         
-    def _finish_requirement(self) -> bool:
-        return self.amount_filtered >= self.amount_to_filter
+    def _finish_requirement(self, unit: SheetFilter) -> bool:
+        return unit.volume_filtered >= self.amount_to_filter
