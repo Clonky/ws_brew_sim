@@ -19,7 +19,7 @@ class Event:
         pass
 
     async def trigger(self):
-        pass
+        await self.evgen.trigger()
 
 
 class TransferEvent(Event):
@@ -125,9 +125,9 @@ class UnitProcedureEvent(Event):
     @classmethod
     async def from_job(cls, job: ProcessingJob, evgen: EventGenerator, unit: Unit, batch_id: str):
         event = cls(
-            unit=job.unit,
+            unit=unit,
             procedure_name=job.name,
-            start_time=curr_time,
+            start_time=await unit._get_servertime(),
             evgen=evgen,
         )
         event.evgen.event.BatchId = batch_id
