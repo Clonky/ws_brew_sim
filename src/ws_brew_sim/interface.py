@@ -24,16 +24,16 @@ def create_app(simulation: Simulation):
         if source is None or target is None:
             return {"error": "Source or target unit not found"}
         job = TransferJob(name=source_name, job_id=str(uuid4()), state=JobState.PENDING, source=source, target=target, amount=amount, rate=rate)
-        simulation.add_job(job)
+        source.add_job(job)
         return {"message": f"Transfer job from {source_name} to {target_name} added."}
     
     @app.post("/filter_job")
-    async def create_procedure_job(unit_name: Annotated[str, Form()], procedure_name: Annotated[str, Form()], batch_id: Annotated[str, Form()], amount: Annotated[int, Form()]):
+    async def create_procedure_job(unit_name: Annotated[str, Form()], batch_id: Annotated[str, Form()], amount: Annotated[int, Form()]):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
         if unit is None:
             return {"error": "Unit not found"}
         job = FilterJob(
-            name=unit_name,
+            name=unit,
             job_id=str(uuid4()),
             state=JobState.PENDING,
             batch_id=batch_id,
@@ -41,8 +41,8 @@ def create_app(simulation: Simulation):
             amount_filtered=0,
             amount_to_filter=amount,
             )
-        simulation.add_job(job)
-        return {"message": f"Procedure job {procedure_name} for unit {unit_name} added."}
+        unit.add_job(job)
+        return {"message": f"Filter job for unit {unit} added."}
 
     @app.get("/", response_class=HTMLResponse)
     async def read_root(request: Request):

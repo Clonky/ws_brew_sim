@@ -5,17 +5,18 @@ from uuid import uuid4
 from .behaviours import NormalDistBehaviour, DurationTimer
 from .events import TransferEvent, Event, UnitProcedureEvent
 from .modules import Volume, Module
-from .statemachine import StateMachineTree
 from asyncua import Server
 from asyncua.common.node import Node
 from asyncua import ua
 from asyncua.server.event_generator import EventGenerator
 import asyncio
 import logging
+from .jobs import JobState, TransferJob, FilterJob
+from .statemachine import StateMachineTree
 
 if TYPE_CHECKING:
     from .simulation import Simulation
-    from .jobs import JobState, TransferJob, ProcessingJob, Job
+    from .jobs import JobState, TransferJob, Job
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,7 @@ class Unit:
         self.serial_number = str(uuid4())[:12]
         self.name = name
         self.node_id = node_id
+        self.jobs = deque()
         self.job = None
         self.node: Node | None = None
         self.modules = modules
@@ -35,19 +37,20 @@ class Unit:
         self.evgen = dict()
         self.event: Event | None = None
         self._populate_modules()
-        self.statemachine = None
+        self.statemachine: None | StateMachineTree = None
 
     def __repr__(self):
         return f"Unit(name={self.name}, node_id={self.node_id}"
 
+    def add_job(self, job: Job):
+        self.jobs.append(job)
+
     def _check_jobs(self):
-        if self.simulation.jobs:
-            first_job = self.simulation.jobs[0]
-            if first_job.name == self.name:
-                self.job = self.simulation.jobs.popleft()
+        if self.jobs and self.job is None:
+            self.job = self.jobs.popleft()
 
     async def _get_servertime(self) -> float:
-        time_node = await self.simulation.server.get_node(TIME_NODE)
+        time_node = self.simulation.server.get_node(TIME_NODE)
         return await time_node.read_value()
 
     def _handle_job(self):
@@ -138,14 +141,16 @@ class Tank(Unit):
                     self.evgen["TransferEvent"] = await self.create_transfer_event_generator(self.simulation.server)
                 self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
                 self.job.state = JobState.RUNNING
+                self.statemachine.start_production()
             elif self.job.state == JobState.RUNNING and self.statemachine.is_in_production():
                 # Perform transfer here
-                self.job.run()
+                self.job.run(self)
             elif self.job.state == JobState.COMPLETED:
                 logger.info(f"Job {self.job} on tank {self.name} completed")
                 time = await self._get_servertime()
-                self.event.add_completion_info(time, self.job.source, self.job.target)
+                self.event.add_completion_info(self.job, time)
                 await self.event.trigger()
+                self.statemachine.stop_production()
                 self.event = None
                 self.job = None
 
@@ -180,10 +185,8 @@ class BrightBeerTankExample(Tank):
 class SheetFilter(Unit):
     def __init__(self, simulation: Simulation, nodeid: ua.NodeId, modules: list[Module] = []):
         super().__init__("SheetFilter", nodeid, simulation, modules=modules)
-        self.input_buffer = 0.0
-        self.output_buffer = 0.0
-        self.jobs: deque[Job] = deque()
-        self.job: Job | None = None
+        self.volume = 0
+        self.volume_filtered = 0
 
     async def run(self):
         for module in self.modules:
@@ -204,26 +207,25 @@ class SheetFilter(Unit):
             self.evgen["ProcessEvent"] = process_gen
 
     async def _handle_job(self):
-        if self.job is None and self.jobs:
-            self.job = self.jobs.popleft()
+        if self.job and self.job.state == JobState.PENDING:
             logger.info(f"Starting job {self.job} on SheetFilter {self.name}")
             self.job.state = JobState.RUNNING
-            await self._setup_events()
+            await self._setup_event()
         elif self.job and self.job.state == JobState.RUNNING:
             self.job.run(self)
         elif self.job.is_finished():
             logger.info(f"Job {self.job} on SheetFilter {self.name} completed")
-            self.event.add_completion_info(self.job, await self._get_servertime())
+            await self.event.add_completion_info(self.job, await self._get_servertime())
             await self.event.trigger()
             self.job = None
             self.event = None
 
     async def _setup_event(self):
-        if type(self.job) == ProcessingJob:
+        if isinstance(self.job, FilterJob):
             self.event = await UnitProcedureEvent.from_job(
                 self.job, self.evgen["ProcessEvent"], self, self.job.batch_id
             )
-        elif type(self.job) == TransferJob:
+        elif isinstance(self.job, TransferJob):
             time = await self._get_servertime()
             self.event = await TransferEvent.from_job(
                 self.job, self.evgen["TransferEvent"], time, "batch_001"
@@ -235,5 +237,7 @@ class SheetFilterExample(SheetFilter):
             Module("Pressure", ua.NodeId(6151, 15), NormalDistBehaviour(1.5, 0.1)),
             Module("PowerOnDuration", ua.NodeId(6268, 15), DurationTimer(0.0)),
             Module("TurbidityOutlet", ua.NodeId(6153, 15), NormalDistBehaviour(1.5, 0.1)),
+            Volume(0),
                 ]
         super().__init__(simulation, ua.NodeId(5100, 15), modules=modules)
+        self.volume = next((m for m in self.modules if m.name == "Volume"), None)
