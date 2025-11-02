@@ -1,5 +1,4 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
 from dataclasses import dataclass, field
 from asyncua import Server
 from asyncua.ua import NodeId
@@ -123,6 +122,16 @@ class StateMachineTree:
         states = self.get_path_to_state("Production")
         production = states[-1]
         return production.active
+
+    def start_production(self):
+        states = self.get_path_to_state("Production")
+        for state in states:
+            state.active = True
+    
+    def stop_production(self):
+        states = self.get_path_to_state("Production")
+        for state in states:
+            state.active = False
 
 
 
