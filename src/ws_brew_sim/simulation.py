@@ -34,10 +34,5 @@ class Simulation:
     async def start_loop(self):
         logging.info("Starting simulation loop...")
         while True:
-            try:
-                await self.run()
-                await asyncio.sleep(0.5)
-            except Exception as e:
-                logging.error(f"Error in simulation loop: {e}")
-                self.stop()
-                break
+            await self.run()
+            await asyncio.sleep(0.5)
