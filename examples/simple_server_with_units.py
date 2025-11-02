@@ -1,10 +1,8 @@
 import os
 import asyncio
 import asyncua
-from collections import deque
 from ws_brew_sim.simulation import Simulation
 from ws_brew_sim.units import FermentationTankExample, BrightBeerTankExample, SheetFilterExample
-from ws_brew_sim.jobs import TransferJob
 from ws_brew_sim.interface import create_interface
 from asyncua import ua
 import logging
