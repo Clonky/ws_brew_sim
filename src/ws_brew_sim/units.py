@@ -182,6 +182,7 @@ class BrightBeerTankExample(Tank):
         modules = [Volume(initial_vol)]
         super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation, modules=modules)
 
+
 class SheetFilter(Unit):
     def __init__(self, simulation: Simulation, nodeid: ua.NodeId, modules: list[Module] = []):
         super().__init__("SheetFilter", nodeid, simulation, modules=modules)
@@ -227,17 +228,16 @@ class SheetFilter(Unit):
             )
         elif isinstance(self.job, TransferJob):
             time = await self._get_servertime()
-            self.event = await TransferEvent.from_job(
-                self.job, self.evgen["TransferEvent"], time, "batch_001"
-            )
+            self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
+
 
 class SheetFilterExample(SheetFilter):
     def __init__(self, simulation: Simulation):
         modules = [
             Module("Pressure", ua.NodeId(6151, 15), NormalDistBehaviour(1.5, 0.1)),
             Module("PowerOnDuration", ua.NodeId(6268, 15), DurationTimer(0.0)),
-            Module("TurbidityOutlet", ua.NodeId(6153, 15), NormalDistBehaviour(1.5, 0.1)),
+            Module("TurbidityOutlet", ua.NodeId(6153, 15), NormalDistBehaviour(0.5, 0.1)),
             Volume(0),
-                ]
+        ]
         super().__init__(simulation, ua.NodeId(5100, 15), modules=modules)
         self.volume = next((m for m in self.modules if m.name == "Volume"), None)
