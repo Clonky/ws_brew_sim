@@ -8,6 +8,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+
 TRANSITION_ID = 2310
 STATE_ID = 2307
 CURRENT_STATE_ID = 2760
@@ -50,16 +51,28 @@ class StateMachineTree:
     root: StateMachineLevel
 
     @classmethod
-    async def build_tree(cls, server: Server, parent_node_id: NodeId):
+    async def build_tree_operation_mode(cls, server: Server, parent_node_id: NodeId):
         parent_node = server.get_node(parent_node_id)
         operation_mode_node = await parent_node.get_child(["4:Monitoring", "4:Status", "4:OperationMode"])
         root = await cls.get_states_and_transitions(server, operation_mode_node.nodeid)
         return cls(root)
 
+    @classmethod
+    async def build_tree_machine_state(cls, server: Server, parent_node_id: NodeId):
+        machinery_idx = await server.get_namespace_index("http://opcfoundation.org/UA/Machinery/")
+        machine_state_node = server.get_node(NodeId(1002, machinery_idx))
+        parent_node = server.get_node(parent_node_id)
+        machine_state_local = await parent_node.get_child(["4:Monitoring", "4:Status", f"{machinery_idx}:MachineryItemState"])
+        root = await cls.get_states_and_transitions(server, machine_state_local.nodeid, src_override=machine_state_node.nodeid)
+        return cls(root)
+
     @staticmethod
-    async def get_states_and_transitions(server: Server, parent_node_id: NodeId):
+    async def get_states_and_transitions(server: Server, parent_node_id: NodeId, src_override: NodeId | None = None):
         states_and_transitions = await server.get_node(parent_node_id).get_children()
+        if src_override:
+            states_and_transitions = await server.get_node(src_override).get_children()
         current_state_node = await server.get_node(parent_node_id).get_child("0:CurrentState")
+        logger.warn(current_state_node)
         states = [istate for istate in states_and_transitions if await istate.read_type_definition() ==  NodeId(STATE_ID)]
         states = [State(
             name = (await istate.read_display_name()).Text,
@@ -71,7 +84,8 @@ class StateMachineTree:
         substates = [istate for istate in states_and_transitions if
                       await istate.read_type_definition() !=  NodeId(STATE_ID) and
                       await istate.read_type_definition() !=  NodeId(TRANSITION_ID) and
-                      await istate.read_type_definition() !=  NodeId(CURRENT_STATE_ID)]
+                      await istate.read_type_definition() !=  NodeId(CURRENT_STATE_ID) and
+                      (await istate.read_display_name()).Text != "DefaultInstanceBrowseName"]
         if substates:
             for istate, isubstate in zip(states, substates):
                 logger.info("Adding state: %s", istate)

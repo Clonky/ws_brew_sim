@@ -56,12 +56,28 @@ def create_app(simulation: Simulation):
     async def index_units(request: Request):
         return templates.TemplateResponse("units.html", {"request": request, "units": simulation.units})
 
-    @app.post("/unit/{unit_name}/state/", response_class=HTMLResponse)
-    async def change_state(request: Request, unit_name: str, state_name: str, action: str):
+    @app.post("/unit/{unit_name}/state_operation_mode/", response_class=HTMLResponse)
+    async def change_state_operation(request: Request, unit_name: str, state_name: str, action: str):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
         if unit:
-            unit.statemachine.disable_all_states()
-            state_path = unit.statemachine.get_path_to_state(state_name)
+            unit.statemachine_operation_mode.disable_all_states()
+            state_path = unit.statemachine_operation_mode.get_path_to_state(state_name)
+            for state in state_path:
+                await state.curr_state_node.set_writable(True)
+                if action == "deactivate":
+                    await state.curr_state_node.write_value(ua.LocalizedText("Null", "en"))
+                    state.active = False
+                elif action == "activate":
+                    await state.curr_state_node.write_value(ua.LocalizedText(state.name, "en"))
+                    state.active = True
+        return templates.TemplateResponse("show_unit.html", {"request": request, "unit": unit})
+
+    @app.post("/unit/{unit_name}/state_machine_state/", response_class=HTMLResponse)
+    async def change_state_machine(request: Request, unit_name: str, state_name: str, action: str):
+        unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
+        if unit:
+            unit.statemachine_machine_state.disable_all_states()
+            state_path = unit.statemachine_machine_state.get_path_to_state(state_name)
             for state in state_path:
                 await state.curr_state_node.set_writable(True)
                 if action == "deactivate":

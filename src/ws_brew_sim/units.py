@@ -37,7 +37,8 @@ class Unit:
         self.evgen = dict()
         self.event: Event | None = None
         self._populate_modules()
-        self.statemachine: None | StateMachineTree = None
+        self.statemachine_operation_mode: None | StateMachineTree = None
+        self.statemachine_machine_state: None | StateMachineTree = None
 
     def __repr__(self):
         return f"Unit(name={self.name}, node_id={self.node_id}"
@@ -76,7 +77,8 @@ class Unit:
         await serial_number_node.write_value(self.serial_number)
 
     async def _set_up_statemachines(self):
-        self.statemachine = await StateMachineTree.build_tree(self.simulation.server, self.node_id)
+        self.statemachine_operation_mode = await StateMachineTree.build_tree_operation_mode(self.simulation.server, self.node_id)
+        self.statemachine_machine_state = await StateMachineTree.build_tree_machine_state(self.simulation.server, self.node_id)
 
     async def _set_internal_static_state(self):
         if self.node:
@@ -141,8 +143,9 @@ class Tank(Unit):
                     self.evgen["TransferEvent"] = await self.create_transfer_event_generator(self.simulation.server)
                 self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
                 self.job.state = JobState.RUNNING
-                self.statemachine.start_production()
-            elif self.job.state == JobState.RUNNING and self.statemachine.is_in_production():
+                self.statemachine_operation_mode.start_production()
+                self.build_tree_operation_modestatemachine_operation_mode.start_production()
+            elif self.job.state == JobState.RUNNING and self.statemachine_operation_mode.is_in_production():
                 # Perform transfer here
                 self.job.run(self)
             elif self.job.state == JobState.COMPLETED:
@@ -150,8 +153,8 @@ class Tank(Unit):
                 time = await self._get_servertime()
                 self.event.add_completion_info(self.job, time)
                 await self.event.trigger()
-                self.statemachine.stop_production()
-                self.event = None
+                self.statemachine_operation_mode.stop_production()
+                self.build_tree_operation_modestatemachine_operation_mode.stop_production()
                 self.job = None
 
     async def _setup_evgen(self, server: Server):
