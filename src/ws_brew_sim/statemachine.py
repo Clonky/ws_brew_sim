@@ -49,6 +49,7 @@ class StateMachineLevel:
 @dataclass
 class StateMachineTree:
     root: StateMachineLevel
+    default_mode: None | str = None
 
     @classmethod
     async def build_tree_operation_mode(cls, server: Server, parent_node_id: NodeId):
@@ -132,17 +133,29 @@ class StateMachineTree:
 
         return find_path(self.root, [])
 
+    def activate_state(self, statename: str):
+        states = self.get_path_to_state(statename)
+        for state in states:
+            state.active = True
+
+    def goto_default(self):
+        if self.default_mode:
+            self.disable_all_states()
+            self.activate_state(self.default_mode)
+
     def is_in_production(self):
         states = self.get_path_to_state("Production")
         production = states[-1]
         return production.active
 
     def start_production(self):
+        self.disable_all_states()
         states = self.get_path_to_state("Production")
         for state in states:
             state.active = True
     
     def stop_production(self):
+        self.disable_all_states()
         states = self.get_path_to_state("Production")
         for state in states:
             state.active = False

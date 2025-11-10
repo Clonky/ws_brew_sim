@@ -23,7 +23,7 @@ TIME_NODE = ua.NodeId(2258, 0)
 
 
 class Unit:
-    def __init__(self, name: str, node_id: ua.NodeId, simulation: "Simulation", modules: list[Module] = []):
+    def __init__(self, name: str, node_id: ua.NodeId, simulation: "Simulation", modules: list[Module] = [], initial_operation_mode=""):
         self.asset_id = str(uuid4())[:12]
         self.serial_number = str(uuid4())[:12]
         self.name = name
@@ -38,6 +38,7 @@ class Unit:
         self._populate_modules()
         self.statemachine_operation_mode: None | StateMachineTree = None
         self.statemachine_machine_state: None | StateMachineTree = None
+        self.initial_operation_mode = initial_operation_mode
 
     def __repr__(self):
         return f"Unit(name={self.name}, node_id={self.node_id}"
@@ -78,6 +79,8 @@ class Unit:
 
     async def _set_up_statemachines(self):
         self.statemachine_operation_mode = await StateMachineTree.build_tree_operation_mode(self.simulation.server, self.node_id)
+        if self.initial_operation_mode:
+            self.statemachine_operation_mode.activate_state(self.initial_operation_mode)
         self.statemachine_machine_state = await MachineState.build_tree_machine_state(self.simulation.server, self.node_id)
 
     async def _set_internal_static_state(self):
@@ -123,9 +126,9 @@ class Unit:
 
 class Tank(Unit):
     def __init__(
-        self, name: str, node_id: ua.NodeId, simulation: Simulation, initial_vol=0, modules: list[Module] = []
+        self, name: str, node_id: ua.NodeId, simulation: Simulation, initial_vol=0, modules: list[Module] = [], **kwargs
     ):
-        super().__init__(name, node_id, simulation)
+        super().__init__(name, node_id, simulation, **kwargs)
         if not any(m.name == "Volume" for m in modules):
             modules.append(Volume(initial_vol))
         self.modules = modules
@@ -144,6 +147,7 @@ class Tank(Unit):
                 self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
                 self.job.state = JobState.RUNNING
                 self.statemachine_operation_mode.start_production()
+                self.statemachine_operation_mode.default_mode = "Used"
                 self.statemachine_machine_state.start_production()
             elif self.job.state == JobState.RUNNING and self.statemachine_operation_mode.is_in_production():
                 # Perform transfer here
@@ -154,6 +158,7 @@ class Tank(Unit):
                 self.event.add_completion_info(self.job, time)
                 await self.event.trigger()
                 self.statemachine_operation_mode.stop_production()
+                self.statemachine_operation_mode.goto_default()
                 self.statemachine_machine_state.stop_production()
                 self.job = None
 
@@ -177,18 +182,18 @@ class Tank(Unit):
 class FermentationTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=1000):
         modules = [Temperature(ua.NodeId(6277, 15), 12, 0.5), Volume(initial_vol)]
-        super().__init__("FermentationTank", ua.NodeId(5209, 15), simulation, modules=modules)
+        super().__init__("FermentationTank", ua.NodeId(5209, 15), simulation, modules=modules, initial_operation_mode="Used")
 
 
 class BrightBeerTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=0):
         modules = [Volume(initial_vol)]
-        super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation, modules=modules)
+        super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation, modules=modules, initial_operation_mode="Sterile")
 
 
 class SheetFilter(Unit):
-    def __init__(self, simulation: Simulation, nodeid: ua.NodeId, modules: list[Module] = []):
-        super().__init__("SheetFilter", nodeid, simulation, modules=modules)
+    def __init__(self, simulation: Simulation, nodeid: ua.NodeId, modules: list[Module] = [], **kwargs):
+        super().__init__("SheetFilter", nodeid, simulation, modules=modules, **kwargs)
         self.volume = 0
         self.volume_filtered = 0
 
@@ -215,11 +220,14 @@ class SheetFilter(Unit):
             logger.info(f"Starting job {self.job} on SheetFilter {self.name}")
             self.job.state = JobState.RUNNING
             self.statemachine_machine_state.start_production()
+            self.statemachine_operation_mode.start_production()
+            self.statemachine_operation_mode.default_mode = "Used"
             await self._setup_event()
         elif self.job and self.job.state == JobState.RUNNING:
             self.job.run(self)
         elif self.job.is_finished():
             self.statemachine_machine_state.stop_production()
+            self.statemachine_operation_mode.goto_default()
             logger.info(f"Job {self.job} on SheetFilter {self.name} completed")
             self.event.add_completion_info(self.job, await self._get_servertime())
             await self.event.trigger()
@@ -244,5 +252,5 @@ class SheetFilterExample(SheetFilter):
             Turbidity(ua.NodeId(6153, 15), 0.5, 0.1),
             Volume(0),
         ]
-        super().__init__(simulation, ua.NodeId(5100, 15), modules=modules)
+        super().__init__(simulation, ua.NodeId(5100, 15), modules=modules, initial_operation_mode="Sterile")
         self.volume = next((m for m in self.modules if m.name == "Volume"), None)

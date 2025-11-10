@@ -50,6 +50,8 @@ class TransferJob(Job):
         )
 
     def run(self, unit: Unit):
+        self.target.statemachine_operation_mode.default_mode = "Used"
+        self.target.statemachine_operation_mode.goto_default()
         transfer_amount = min(self.rate, self.source.volume.volume)
         self.source.volume -= transfer_amount
         self.moved_volume += transfer_amount
