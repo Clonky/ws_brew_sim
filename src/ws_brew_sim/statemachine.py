@@ -147,8 +147,6 @@ class StateMachineTree:
         for state in states:
             state.active = False
 
-
-
     def recursively_get_states(self, state: State, collection: list[State]):
         if state.substates == []:
             collection.append(state)
@@ -157,6 +155,27 @@ class StateMachineTree:
             collection.append(state)
             for istate in state.substates.possible_states:
                 return collection + self.recursively_get_states(istate, collection)
+
+@dataclass
+class MachineState(StateMachineTree):
+
+    def __post_init__(self):
+        self.set_default()
+
+    def start_production(self):
+        self.disable_all_states()
+        states = self.get_path_to_state("Executing")
+        for state in states:
+            state.active = True
+
+    def stop_production(self):
+        self.disable_all_states()
+        states = self.get_path_to_state("NotExecuting")
+        for state in states:
+            state.active = True
+
+    def set_default(self):
+        self.stop_production()
 
 
         

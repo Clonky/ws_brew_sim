@@ -56,6 +56,17 @@ def create_app(simulation: Simulation):
     async def index_units(request: Request):
         return templates.TemplateResponse("units.html", {"request": request, "units": simulation.units})
 
+    @app.get("/statemachine/{unit_name}/")
+    async def get_statemachine(request: Request,unit_name: str,  statename: str):
+        unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
+        if unit:
+            if statename == "operation_mode":
+                return templates.TemplateResponse("_statemachine_operation_mode.html", {"request": request, "unit": unit})
+            elif statename == "machine_state":
+                return templates.TemplateResponse("_statemachine_machine_state.html", {"request": request, "unit": unit})
+            else:
+                return "Invalid statename"
+
     @app.post("/unit/{unit_name}/state_operation_mode/", response_class=HTMLResponse)
     async def change_state_operation(request: Request, unit_name: str, state_name: str, action: str):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)

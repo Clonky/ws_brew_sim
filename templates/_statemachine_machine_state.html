@@ -1,0 +1,11 @@
+{% with statemachine_name="state_machine_state" %}
+<div class="flexlist flexcol">
+    <h3>Machine State</h3>
+    {% with statetree=unit.statemachine_machine_state %}
+    {% if statetree %}
+        {% include "_statetree.html" %}
+    {% else %}
+        <p>No state machine available.</p>
+    {% endif %}
+    {% endwith %}
+{% endwith %}

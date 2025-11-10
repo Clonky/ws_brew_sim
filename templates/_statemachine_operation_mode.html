@@ -1,0 +1,12 @@
+{% with statemachine_name="state_operation_mode" %}
+<div class="flexlist flexcol">
+    <div class="flexlist flexcol">
+        <h3>Operation Mode</h3>
+        {% with statetree=unit.statemachine_operation_mode %}
+        {% if statetree %}
+            {% include "_statetree.html" %}
+        {% else %}
+            <p>No state machine available.</p>
+        {% endif %}
+        {% endwith %}
+{% endwith %}

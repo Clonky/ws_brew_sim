@@ -19,32 +19,8 @@
         </tbody>
     </table>
 
-    {% with statemachine_name="state_operation_mode" %}
     <div class="flexlist flexcol">
-        <div class="flexlist flexcol">
-            <h3>Operation Mode</h3>
-            {% with statetree=unit.statemachine_operation_mode %}
-            {% if statetree %}
-                {% include "_statetree.html" %}
-            {% else %}
-                <p>No state machine available.</p>
-            {% endif %}
-            {% endwith %}
-        {% endwith %}
-
-        </div>
-        {% with statemachine_name="state_machine_state" %}
-        <div class="flexlist flexcol">
-            <h3>Machine State</h3>
-            {% with statetree=unit.statemachine_machine_state %}
-            {% if statetree %}
-                {% include "_statetree.html" %}
-            {% else %}
-                <p>No state machine available.</p>
-            {% endif %}
-            {% endwith %}
-        {% endwith %}
-
-        </div>
+        <div id="operationmode" hx-get="statemachine/{{unit.name}}/?statename=operation_mode" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</div>
+        <div id="machinestate" hx-get="statemachine/{{unit.name}}/?statename=machine_state" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</div>
     </div>
 </div>

@@ -12,7 +12,7 @@ from asyncua.server.event_generator import EventGenerator
 import asyncio
 import logging
 from .jobs import JobState, TransferJob, FilterJob
-from .statemachine import StateMachineTree
+from .statemachine import StateMachineTree, MachineState
 
 if TYPE_CHECKING:
     from .simulation import Simulation
@@ -78,7 +78,7 @@ class Unit:
 
     async def _set_up_statemachines(self):
         self.statemachine_operation_mode = await StateMachineTree.build_tree_operation_mode(self.simulation.server, self.node_id)
-        self.statemachine_machine_state = await StateMachineTree.build_tree_machine_state(self.simulation.server, self.node_id)
+        self.statemachine_machine_state = await MachineState.build_tree_machine_state(self.simulation.server, self.node_id)
 
     async def _set_internal_static_state(self):
         if self.node:
@@ -144,7 +144,7 @@ class Tank(Unit):
                 self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
                 self.job.state = JobState.RUNNING
                 self.statemachine_operation_mode.start_production()
-                self.build_tree_operation_modestatemachine_operation_mode.start_production()
+                self.statemachine_machine_state.start_production()
             elif self.job.state == JobState.RUNNING and self.statemachine_operation_mode.is_in_production():
                 # Perform transfer here
                 self.job.run(self)
@@ -154,7 +154,7 @@ class Tank(Unit):
                 self.event.add_completion_info(self.job, time)
                 await self.event.trigger()
                 self.statemachine_operation_mode.stop_production()
-                self.build_tree_operation_modestatemachine_operation_mode.stop_production()
+                self.statemachine_machine_state.stop_production()
                 self.job = None
 
     async def _setup_evgen(self, server: Server):
@@ -214,10 +214,12 @@ class SheetFilter(Unit):
         if self.job and self.job.state == JobState.PENDING:
             logger.info(f"Starting job {self.job} on SheetFilter {self.name}")
             self.job.state = JobState.RUNNING
+            self.statemachine_machine_state.start_production()
             await self._setup_event()
         elif self.job and self.job.state == JobState.RUNNING:
             self.job.run(self)
         elif self.job.is_finished():
+            self.statemachine_machine_state.stop_production()
             logger.info(f"Job {self.job} on SheetFilter {self.name} completed")
             await self.event.add_completion_info(self.job, await self._get_servertime())
             await self.event.trigger()
