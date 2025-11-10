@@ -1,4 +1,6 @@
 from __future__ import annotations
+from ws_brew_sim.behaviours import DurationTimer
+from ws_brew_sim.behaviours import NormalDistBehaviour
 from typing import TYPE_CHECKING
 from .behaviours import StaticBehaviour
 from .utils import NodeId
@@ -12,11 +14,12 @@ logger = logging.getLogger(__name__)
 
 
 class Module:
-    def __init__(self, name: str, node_id: NodeId | None, update_behaviour=None):
+    def __init__(self, name: str, node_id: NodeId | None, update_behaviour=None, unit: str | None = None):
         self.name = name
         self.node_id = node_id
         self.node = None
         self.update_behaviour = update_behaviour
+        self.unit = unit
 
     async def connect(self, server: Server):
         if not self.node:
@@ -38,7 +41,7 @@ class Module:
 
 class Volume(Module):
     def __init__(self, initial_volume: int = 0):
-        super().__init__("Volume", None, StaticBehaviour(initial_volume))
+        super().__init__("Volume", None, StaticBehaviour(initial_volume), unit="l")
 
     @property
     def volume(self) -> int:
@@ -81,3 +84,23 @@ class Volume(Module):
         if isinstance(other, (int)):
             return self.volume < other
         raise NotImplementedError("Less than comparison only supported with int or float types.")
+
+class Temperature(Module):
+
+    def __init__(self, nodeid, mean, std):
+        super().__init__("Temperature", nodeid, NormalDistBehaviour(mean, std), "°C")
+
+class Turbidity(Module):
+
+    def __init__(self, nodeid, mean, std):
+        super().__init__("Turbidity", nodeid, NormalDistBehaviour(mean, std), "EBC")
+
+class Pressure(Module):
+
+    def __init__(self, nodeid, mean, std):
+        super().__init__("Pressure", nodeid, NormalDistBehaviour(mean, std), "bar")
+
+class Timer(Module):
+
+    def __init__(self, nodeid, name):
+        super().__init__(name, nodeid, DurationTimer(0.0), "s")

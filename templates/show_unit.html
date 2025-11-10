@@ -7,6 +7,7 @@
             <tr>
                 <th>Module</th>
                 <th>Status</th>
+                <th>Unit</th>
             </tr>
         </thead>
         <tbody>
@@ -14,6 +15,7 @@
                 <tr>
                     <td>{{ module.name }}</td>
                     <td hx-get="/value/{{unit.name}}/{{module.name}}" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</td>
+                    <td>{{ module.unit }}
                 </tr>
             {% endfor %}
         </tbody>

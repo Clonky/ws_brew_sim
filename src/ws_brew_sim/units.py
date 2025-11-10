@@ -2,9 +2,8 @@ from __future__ import annotations
 from collections import deque
 from typing import TYPE_CHECKING
 from uuid import uuid4
-from .behaviours import NormalDistBehaviour, DurationTimer
 from .events import TransferEvent, Event, UnitProcedureEvent
-from .modules import Volume, Module
+from .modules import Volume, Module, Temperature, Turbidity, Timer, Pressure
 from asyncua import Server
 from asyncua.common.node import Node
 from asyncua import ua
@@ -52,7 +51,8 @@ class Unit:
 
     async def _get_servertime(self) -> float:
         time_node = self.simulation.server.get_node(TIME_NODE)
-        return await time_node.read_value()
+        val = await time_node.read_value()
+        return val
 
     def _handle_job(self):
         pass
@@ -176,7 +176,7 @@ class Tank(Unit):
 
 class FermentationTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=1000):
-        modules = [Module("Temperature", ua.NodeId(6277, 15), NormalDistBehaviour(12, 0.5)), Volume(initial_vol)]
+        modules = [Temperature(ua.NodeId(6277, 15), 12, 0.5), Volume(initial_vol)]
         super().__init__("FermentationTank", ua.NodeId(5209, 15), simulation, modules=modules)
 
 
@@ -221,7 +221,7 @@ class SheetFilter(Unit):
         elif self.job.is_finished():
             self.statemachine_machine_state.stop_production()
             logger.info(f"Job {self.job} on SheetFilter {self.name} completed")
-            await self.event.add_completion_info(self.job, await self._get_servertime())
+            self.event.add_completion_info(self.job, await self._get_servertime())
             await self.event.trigger()
             self.job = None
             self.event = None
@@ -239,9 +239,9 @@ class SheetFilter(Unit):
 class SheetFilterExample(SheetFilter):
     def __init__(self, simulation: Simulation):
         modules = [
-            Module("Pressure", ua.NodeId(6151, 15), NormalDistBehaviour(1.5, 0.1)),
-            Module("PowerOnDuration", ua.NodeId(6268, 15), DurationTimer(0.0)),
-            Module("TurbidityOutlet", ua.NodeId(6153, 15), NormalDistBehaviour(0.5, 0.1)),
+            Pressure(ua.NodeId(6151, 15), 1.5, 0.1),
+            Timer(ua.NodeId(6268, 15), "PowerOnDuration"),
+            Turbidity(ua.NodeId(6153, 15), 0.5, 0.1),
             Volume(0),
         ]
         super().__init__(simulation, ua.NodeId(5100, 15), modules=modules)
