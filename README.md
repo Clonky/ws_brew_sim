@@ -33,3 +33,23 @@ jobs for the individual units and monitor values from their equipment modules.
 + logger
 
 Check requirements.txt or pyproject.toml for a detailed list of requirements
+
+## Installation
+
+We recommend installing the project into its own separate virtual environment using python's `venv` tool.
+
+```bash
+python -m venv .venv
+```
+
+Followed by activating and installing the dependencies:
+
+```
+./.venv/Scripts/<Shell specific activation script>
+pip install .
+```
+
+The most comprehensive and tested example is found at `examples/simple_server_with_units.py`, which can be started with:  
+`python examples/simple_server_with_units.py`
+
+It starts an OPC UA Server listening on all adresses on port 4840 and an http interface listening on all adresses on port 8080.
