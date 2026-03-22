@@ -1,0 +1,529 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<UANodeSet xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://opcfoundation.org/UA/2011/03/UANodeSet.xsd" xmlns:uax="http://opcfoundation.org/UA/2008/02/Types.xsd" xmlns:si="http://www.siemens.com/OPCUA/2017/SimaticNodeSetExtensions" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:s1="http://opcfoundation.org/UA/PackML/Types.xsd" xmlns:ua="http://unifiedautomation.com/Configuration/NodeSet.xsd" xmlns:s2="http://opcfoundation.org/UA/DI/Types.xsd" xmlns:uawsbake="http://opcfoundation.org/UA/WeihenstephanStandards/WSBake/" LastModified="2026-02-16T12">
+	<NamespaceUris>
+		<Uri>http://opcfoundation.org/UA/Dictionary/IRDI</Uri>
+		<Uri>http://opcfoundation.org/UA/DI/</Uri>
+		<Uri>http://opcfoundation.org/UA/IA/</Uri>
+		<Uri>http://opcfoundation.org/UA/PADIM/</Uri>
+		<Uri>http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/</Uri>
+		<Uri>http://opcfoundation.org/UA/Machinery/</Uri>
+		<Uri>http://opcfoundation.org/UA/Machinery/ProcessValues/</Uri>
+		<Uri>http://opcfoundation.org/UA/Machinery/Jobs/</Uri>
+		<Uri>http://opcfoundation.org/UA/PackML/</Uri>
+		<Uri>http://opcfoundation.org/UA/ECM/</Uri>
+		<Uri>http://opcfoundation.org/UA/Machinery/Energy/</Uri>
+		<Uri>http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/</Uri>
+		<Uri>http://opcfoundation.org/UA/WeihenstephanStandards/WSBake/</Uri>
+	</NamespaceUris>
+	<Models>
+		<Model ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBake/" PublicationDate="2026-02-16T00:00:00Z" Version="0.01.02">
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/" PublicationDate="2022-11-01T00:00:00" Version="1.05.02"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/Dictionary/IRDI" PublicationDate="2020-02-04T00:00:00" Version="1.00"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/DI/" PublicationDate="2022-11-03T00:00:00" Version="1.04.0"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/IA/" PublicationDate="2024-02-27T00:00:00" Version="1.1.2"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/PADIM/" PublicationDate="2022-06-27T00:00:00" Version="1.0.3"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/ISA95-JOBCONTROL_V2/" PublicationDate="2024-01-31T00:00:00" Version="2.0.0"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/" PublicationDate="2023-08-01T00:00:00" Version="1.04.0"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/ProcessValues/" PublicationDate="2023-05-01T00:00:00" Version="1.00.0"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/Jobs/" PublicationDate="2024-05-01T00:00:00" Version="1.0.1"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/PackML/" PublicationDate="2020-10-08T00:00:00" Version="1.01"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/ECM/" PublicationDate="2025-02-01T00:00:00" Version="1.0.0"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/Energy/" PublicationDate="2025-02-25T00:00:00" Version="0.1"/>
+			<RequiredModel ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/" PublicationDate="2025-07-03T00:00:00" Version="0.01.00"/>
+		</Model>
+	</Models>
+	<Aliases>
+		<Alias Alias="Boolean">i=1</Alias>
+		<Alias Alias="Float">i=10</Alias>
+		<Alias Alias="DateTime">i=13</Alias>
+		<Alias Alias="String">i=12</Alias>
+		<Alias Alias="NodeId">i=17</Alias>
+		<Alias Alias="QualifiedName">i=20</Alias>
+		<Alias Alias="LocalizedText">i=21</Alias>
+		<Alias Alias="HasComponent">i=47</Alias>
+		<Alias Alias="HasProperty">i=46</Alias>
+		<Alias Alias="PropertyType">i=68</Alias>
+		<Alias Alias="HasSubtype">i=45</Alias>
+		<Alias Alias="HasTypeDefinition">i=40</Alias>
+		<Alias Alias="HasModellingRule">i=37</Alias>
+		<Alias Alias="HasAddIn">i=17604</Alias>
+		<Alias Alias="HasInterface">i=17603</Alias>
+		<Alias Alias="IdType">i=256</Alias>
+		<Alias Alias="NumericRange">i=291</Alias>
+	</Aliases>
+	<UAObject SymbolicName="http___opcfoundation_org_UA_WeihenstephanStandards_WSBake_" NodeId="ns=13;i=500" BrowseName="WSBake" ParentNodeId="i=11715">
+		<DisplayName>WSBake</DisplayName>
+		<References>
+			<Reference ReferenceType="HasComponent" IsForward="false">i=11715</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=11616</Reference>
+		</References>
+	</UAObject>
+	<UAVariable DataType="Boolean" NodeId="ns=13;i=600" BrowseName="IsNamespaceSubset" ParentNodeId="ns=13;i=500">
+		<DisplayName>IsNamespaceSubset</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+	</UAVariable>
+	<UAVariable DataType="DateTime" NodeId="ns=13;i=601" BrowseName="NamespacePublicationDate" ParentNodeId="ns=13;i=500">
+		<DisplayName>NamespacePublicationDate</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+		<Value>
+			<uax:DateTime>2022-06-13T00:00:00Z</uax:DateTime>
+		</Value>
+	</UAVariable>
+	<UAVariable DataType="String" NodeId="ns=13;i=602" BrowseName="NamespaceUri" ParentNodeId="ns=13;i=500">
+		<DisplayName>NamespaceUri</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+		<Value>
+			<uax:String>http://weihenstephan-standards.com/WS/</uax:String>
+		</Value>
+	</UAVariable>
+	<UAVariable DataType="String" NodeId="ns=13;i=603" BrowseName="NamespaceVersion" ParentNodeId="ns=13;i=500">
+		<DisplayName>NamespaceVersion</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+		<Value>
+			<uax:String>0.0.1</uax:String>
+		</Value>
+	</UAVariable>
+	<UAVariable DataType="IdType" ValueRank="1" NodeId="ns=13;i=604" BrowseName="StaticNodeIdTypes" ParentNodeId="ns=13;i=500">
+		<DisplayName>StaticNodeIdTypes</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+	</UAVariable>
+	<UAVariable DataType="NumericRange" ValueRank="1" NodeId="ns=13;i=605" BrowseName="StaticNumericNodeIdRange" ParentNodeId="ns=13;i=500">
+		<DisplayName>StaticNumericNodeIdRange</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+	</UAVariable>
+	<UAVariable DataType="String" NodeId="ns=13;i=606" BrowseName="StaticStringNodeIdPattern" ParentNodeId="ns=13;i=500">
+		<DisplayName>StaticStringNodeIdPattern</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+	</UAVariable>
+	<UAVariable DataType="i=96" ValueRank="1" NodeId="ns=13;i=607" BrowseName="DefaultRolePermissions" ParentNodeId="ns=13;i=500">
+		<DisplayName>DefaultRolePermissions</DisplayName>
+		<References>
+			<Reference ReferenceType="HasProperty" IsForward="false">ns=13;i=500</Reference>
+			<Reference ReferenceType="HasTypeDefinition">i=68</Reference>
+		</References>
+	</UAVariable>
+	<UAObjectType NodeId="ns=13;i=10000" BrowseName="13:WSBakeOvenType" SymbolicName="WSBakeOvenType">
+		<DisplayName>WSBakeOvenType</DisplayName>
+		<Description>The WSBakeOvenType represents a generic oven from the WS Bake domain, which serves as a supertype for tunnel or rack ovens.</Description>
+		<References>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50101</Reference>
+			<Reference ReferenceType="HasSubtype" IsForward="false">ns=12;i=10034</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50014</Reference>
+		</References>
+		<Extensions>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:Monitoring: Provides information about the monitoring. Provides information about the monitoring. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:Consumption: Provides information about the consumption. Provides information about the consumption. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachineryEM:Electricity: This data point gives the consumption of electricity. This data point gives the consumption of electricity. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:Water: This data tag gives the amount of water which has been consumed. This data tag gives the amount of water which has been consumed. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:Process: Provides information about the process. Provides information about the process. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:TemperatureProductCore: Indicates the temperature in the product core.  Indicates the temperature in the product core.  </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:TemperatureElectricalCabinet: Provides information about the temperature electrical cabinet. Provides information about the temperature electrical cabinet. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:PressureChimneyFlueSteam: Provides information about the pressure chimney flue steam. Provides information about the pressure chimney flue steam. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:PressureChimneyFlueGas: Provides information about the pressure chimney flue gas. Provides information about the pressure chimney flue gas. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:Status: Provides information about the status. Provides information about the status. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:PackMLBaseStateMachine: Provides information about the Pack ML base state machine. Provides information about the Pack ML base state machine. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:OperatingMode: Provides information about the operating mode. Provides information about the operating mode. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:MachineryBuildingBlocks: Provides information about the machinery building blocks. Provides information about the machinery building blocks. </uawsbake:ImplementationNote>
+			</Extension>
+		</Extensions>
+	</UAObjectType>
+	<UAObject NodeId="ns=13;i=50000" BrowseName="6:Monitoring" SymbolicName="Monitoring" ParentNodeId="ns=13;i=10000">
+		<DisplayName>Monitoring</DisplayName>
+		<Description>Provides information about the monitoring.</Description>
+		<References>
+			<Reference ReferenceType="HasProperty">ns=6;i=6089</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10032</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50001</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50006</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50011</Reference>
+		</References>
+		<Extensions>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:Consumption: Provides information about the consumption. Provides information about the consumption. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachineryEM:Electricity: This data point gives the consumption of electricity. This data point gives the consumption of electricity. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:Water: This data tag gives the amount of water which has been consumed. This data tag gives the amount of water which has been consumed. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:Process: Provides information about the process. Provides information about the process. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:TemperatureProductCore: Indicates the temperature in the product core.  Indicates the temperature in the product core.  </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:TemperatureElectricalCabinet: Provides information about the temperature electrical cabinet. Provides information about the temperature electrical cabinet. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:PressureChimneyFlueSteam: Provides information about the pressure chimney flue steam. Provides information about the pressure chimney flue steam. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:PressureChimneyFlueGas: Provides information about the pressure chimney flue gas. Provides information about the pressure chimney flue gas. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:Status: Provides information about the status. Provides information about the status. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:PackMLBaseStateMachine: Provides information about the Pack ML base state machine. Provides information about the Pack ML base state machine. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:OperatingMode: Provides information about the operating mode. Provides information about the operating mode. </uawsbake:ImplementationNote>
+			</Extension>
+		</Extensions>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50001" BrowseName="6:Consumption" SymbolicName="Consumption" ParentNodeId="ns=13;i=50000">
+		<DisplayName>Consumption</DisplayName>
+		<Description>Provides information about the consumption.</Description>
+		<References>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10028</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50002</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50004</Reference>
+		</References>
+		<Extensions>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachineryEM:Electricity: This data point gives the consumption of electricity. This data point gives the consumption of electricity. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:Water: This data tag gives the amount of water which has been consumed. This data tag gives the amount of water which has been consumed. </uawsbake:ImplementationNote>
+			</Extension>
+		</Extensions>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50002" BrowseName="11:Electricity" SymbolicName="Electricity" ParentNodeId="ns=13;i=50001">
+		<DisplayName>Electricity</DisplayName>
+		<Description>This data point gives the consumption of electricity.</Description>
+		<References>
+			<Reference ReferenceType="HasTypeDefinition">ns=0;i=61</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50003</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50003" BrowseName="11:Main" SymbolicName="Main" ParentNodeId="ns=13;i=50002">
+		<DisplayName>Main</DisplayName>
+		<Description></Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=10;i=6056</Reference>
+			<Reference ReferenceType="HasProperty">ns=10;i=6055</Reference>
+			<Reference ReferenceType="HasInterface">ns=3;i=1011</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=10;i=1006</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasInterface">ns=10;i=1009</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50004" BrowseName="12:Water" SymbolicName="Water" ParentNodeId="ns=13;i=50001">
+		<DisplayName>Water</DisplayName>
+		<Description>This data tag gives the amount of water which has been consumed.</Description>
+		<References>
+			<Reference ReferenceType="HasTypeDefinition">ns=0;i=61</Reference>
+			<Reference ReferenceType="HasModellingRule">i=80</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50005</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50005" BrowseName="11:Main" SymbolicName="Main" ParentNodeId="ns=13;i=50004">
+		<DisplayName>Main</DisplayName>
+		<Description></Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=10;i=6056</Reference>
+			<Reference ReferenceType="HasProperty">ns=10;i=6055</Reference>
+			<Reference ReferenceType="HasInterface">ns=3;i=1011</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=10;i=1006</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasInterface">ns=11;i=1003</Reference>
+			<Reference ReferenceType="HasInterface">ns=11;i=1004</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50006" BrowseName="6:Process" SymbolicName="Process" ParentNodeId="ns=13;i=50000">
+		<DisplayName>Process</DisplayName>
+		<Description>Provides information about the process.</Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=12;i=50079</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10030</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50007</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50008</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50009</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50010</Reference>
+		</References>
+		<Extensions>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:TemperatureProductCore: Indicates the temperature in the product core.  Indicates the temperature in the product core.  </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:TemperatureElectricalCabinet: Provides information about the temperature electrical cabinet. Provides information about the temperature electrical cabinet. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:PressureChimneyFlueSteam: Provides information about the pressure chimney flue steam. Provides information about the pressure chimney flue steam. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:PressureChimneyFlueGas: Provides information about the pressure chimney flue gas. Provides information about the pressure chimney flue gas. </uawsbake:ImplementationNote>
+			</Extension>
+		</Extensions>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50007" BrowseName="12:TemperatureProductCore" SymbolicName="TemperatureProductCore" ParentNodeId="ns=13;i=50006">
+		<DisplayName>TemperatureProductCore</DisplayName>
+		<Description>Indicates the temperature in the product core. </Description>
+		<References>
+			<Reference ReferenceType="HasProperty">ns=4;i=1035</Reference>
+			<Reference ReferenceType="HasComponent">ns=7;i=6033</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=7;i=1003</Reference>
+			<Reference ReferenceType="HasModellingRule">i=80</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50008" BrowseName="12:TemperatureElectricalCabinet" SymbolicName="TemperatureElectricalCabinet" ParentNodeId="ns=13;i=50006">
+		<DisplayName>TemperatureElectricalCabinet</DisplayName>
+		<Description>Provides information about the temperature electrical cabinet.</Description>
+		<References>
+			<Reference ReferenceType="HasProperty">ns=4;i=1035</Reference>
+			<Reference ReferenceType="HasComponent">ns=7;i=6033</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=7;i=1003</Reference>
+			<Reference ReferenceType="HasModellingRule">i=80</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50009" BrowseName="13:PressureChimneyFlueSteam" SymbolicName="PressureChimneyFlueSteam" ParentNodeId="ns=13;i=50006">
+		<DisplayName>PressureChimneyFlueSteam</DisplayName>
+		<Description>Provides information about the pressure chimney flue steam.</Description>
+		<References>
+			<Reference ReferenceType="HasProperty">ns=4;i=1035</Reference>
+			<Reference ReferenceType="HasComponent">ns=7;i=6033</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=7;i=1003</Reference>
+			<Reference ReferenceType="HasModellingRule">i=80</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50010" BrowseName="13:PressureChimneyFlueGas" SymbolicName="PressureChimneyFlueGas" ParentNodeId="ns=13;i=50006">
+		<DisplayName>PressureChimneyFlueGas</DisplayName>
+		<Description>Provides information about the pressure chimney flue gas.</Description>
+		<References>
+			<Reference ReferenceType="HasProperty">ns=4;i=1035</Reference>
+			<Reference ReferenceType="HasComponent">ns=7;i=6033</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=7;i=1003</Reference>
+			<Reference ReferenceType="HasModellingRule">i=80</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50011" BrowseName="6:Status" SymbolicName="Status" ParentNodeId="ns=13;i=50000">
+		<DisplayName>Status</DisplayName>
+		<Description>Provides information about the status.</Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=12;i=50081</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50082</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10031</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50012</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50013</Reference>
+		</References>
+		<Extensions>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:PackMLBaseStateMachine: Provides information about the Pack ML base state machine. Provides information about the Pack ML base state machine. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBasis:OperatingMode: Provides information about the operating mode. Provides information about the operating mode. </uawsbake:ImplementationNote>
+			</Extension>
+		</Extensions>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50012" BrowseName="12:PackMLBaseStateMachine" SymbolicName="PackMLBaseStateMachine" ParentNodeId="ns=13;i=50011">
+		<DisplayName>PackMLBaseStateMachine</DisplayName>
+		<Description>Provides information about the Pack ML base state machine.</Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=0;i=2772</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=62</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=65</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=61</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=66</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=167</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=158</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=67</Reference>
+			<Reference ReferenceType="HasComponent">ns=9;i=64</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=9;i=3</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50013" BrowseName="12:OperatingMode" SymbolicName="OperatingMode" ParentNodeId="ns=13;i=50011">
+		<DisplayName>OperatingMode</DisplayName>
+		<Description>Provides information about the operating mode.</Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=0;i=2772</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50058</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50059</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50060</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50061</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50062</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50063</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50064</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50065</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50066</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50067</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50068</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50069</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10016</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50014" BrowseName="6:MachineryBuildingBlocks" SymbolicName="MachineryBuildingBlocks" ParentNodeId="ns=13;i=10000">
+		<DisplayName>MachineryBuildingBlocks</DisplayName>
+		<Description>Provides information about the machinery building blocks.</Description>
+		<References>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10026</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasAddIn">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5048</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5049</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50101</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasAddIn">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5048</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5049</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50101</Reference>
+		</References>
+	</UAObject>
+	<UAObjectType NodeId="ns=13;i=10001" BrowseName="13:WSBakeTunnelOvenMultiLayerType" SymbolicName="WSBakeTunnelOvenMultiLayerType">
+		<DisplayName>WSBakeTunnelOvenMultiLayerType</DisplayName>
+		<Description>The WSBakeTunnelOvenMultiLayerType represents a multi-layer tunnel oven for continuous baking in the WS Bake domain. The products are transported through the oven on several conveyor belts arranged vertically one above the other, with each conveyor belt forming a separate continuous baking path with independently controllable temperature zones. Each level can be modeled as a sequence of baking zones. Represents a tunnel oven for a continuous baking process. The products are transported through the oven on a belt or carrier system and pass through several temperature zones that can be controlled individually.</Description>
+		<References>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50101</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasSubtype" IsForward="false">ns=13;i=10000</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50015</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50016</Reference>
+		</References>
+		<Extensions>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:&lt;Layer&gt;: This mandatory placeholder represents a baking level within the tunnel oven. Each level transports a product stream via its own belt and comprises one or more baking zones, which may differ in their heating principle. This mandatory placeholder represents a baking level within the tunnel oven. Each level transports a product stream via its own belt and comprises one or more baking zones, which may differ in their heating principle. This standard does not specify the browse name of the instances of this placeholder. It is recommended to use the nomenclature of the operating company or to use self-explanatory identifiers.</uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:MachineryBuildingBlocks: This building block refers to all Machinery building blocks used that are defined in the CS series OPC UA Machinery (OPC 40001) and are used by a WSMachine. This building block refers to all Machinery building blocks used that are defined in the CS series OPC UA Machinery (OPC 40001) and are used by a WSMachine. </uawsbake:ImplementationNote>
+			</Extension>
+		</Extensions>
+	</UAObjectType>
+	<UAObject NodeId="ns=13;i=50015" BrowseName="13:&lt;Layer&gt;" SymbolicName="S_Layer_" ParentNodeId="ns=13;i=10001">
+		<DisplayName>&lt;Layer&gt;</DisplayName>
+		<Description>This mandatory placeholder represents a baking level within the tunnel oven. Each level transports a product stream via its own belt and comprises one or more baking zones, which may differ in their heating principle.</Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=12;i=50933</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50940</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50944</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50946</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10189</Reference>
+			<Reference ReferenceType="HasModellingRule">i=11510</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50016" BrowseName="6:MachineryBuildingBlocks" SymbolicName="MachineryBuildingBlocks" ParentNodeId="ns=13;i=10001">
+		<DisplayName>MachineryBuildingBlocks</DisplayName>
+		<Description>This building block refers to all Machinery building blocks used that are defined in the CS series OPC UA Machinery (OPC 40001) and are used by a WSMachine.</Description>
+		<References>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10026</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasAddIn">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5048</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5049</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50101</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasAddIn">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5048</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5049</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50101</Reference>
+		</References>
+	</UAObject>
+	<UAObjectType NodeId="ns=13;i=10002" BrowseName="13:WSBakeTunnelOvenSingleLayerType" SymbolicName="WSBakeTunnelOvenSingleLayerType">
+		<DisplayName>WSBakeTunnelOvenSingleLayerType</DisplayName>
+		<Description>The WSBakeTunnelOvenSingleLayerType represents a tunnel oven in the WS Bake domain for a continuous baking process with one level. The products are transported through the oven on a belt or carrier system and pass through several temperature zones that can be controlled individually.</Description>
+		<References>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50101</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasSubtype" IsForward="false">ns=13;i=10000</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50017</Reference>
+			<Reference ReferenceType="HasComponent">ns=13;i=50018</Reference>
+		</References>
+		<Extensions>
+			<Extension>
+				<uawsbake:ImplementationNote>UAWSBake:SingleLayer: The SingelLayer represents a baking level within the tunnel oven. The SingelLayer represents a baking level within the tunnel oven. </uawsbake:ImplementationNote>
+			</Extension>
+			<Extension>
+				<uawsbake:ImplementationNote>UAMachinery:MachineryBuildingBlocks: This building block refers to all Machinery building blocks used that are defined in the CS series OPC UA Machinery (OPC 40001) and are used by a WSMachine. This building block refers to all Machinery building blocks used that are defined in the CS series OPC UA Machinery (OPC 40001) and are used by a WSMachine. </uawsbake:ImplementationNote>
+			</Extension>
+		</Extensions>
+	</UAObjectType>
+	<UAObject NodeId="ns=13;i=50017" BrowseName="13:SingleLayer" SymbolicName="SingleLayer" ParentNodeId="ns=13;i=10002">
+		<DisplayName>SingleLayer</DisplayName>
+		<Description>The SingelLayer represents a baking level within the tunnel oven.</Description>
+		<References>
+			<Reference ReferenceType="HasComponent">ns=12;i=50933</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50940</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50944</Reference>
+			<Reference ReferenceType="HasComponent">ns=12;i=50946</Reference>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10189</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+		</References>
+	</UAObject>
+	<UAObject NodeId="ns=13;i=50018" BrowseName="6:MachineryBuildingBlocks" SymbolicName="MachineryBuildingBlocks" ParentNodeId="ns=13;i=10002">
+		<DisplayName>MachineryBuildingBlocks</DisplayName>
+		<Description>This building block refers to all Machinery building blocks used that are defined in the CS series OPC UA Machinery (OPC 40001) and are used by a WSMachine.</Description>
+		<References>
+			<Reference ReferenceType="HasTypeDefinition">ns=12;i=10026</Reference>
+			<Reference ReferenceType="HasModellingRule">i=78</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasAddIn">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5048</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5049</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50101</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50099</Reference>
+			<Reference ReferenceType="HasAddIn">ns=13;i=50000</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5048</Reference>
+			<Reference ReferenceType="HasAddIn">ns=6;i=5049</Reference>
+			<Reference ReferenceType="HasAddIn">ns=12;i=50101</Reference>
+		</References>
+	</UAObject>
+</UANodeSet>
