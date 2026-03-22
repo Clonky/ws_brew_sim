@@ -1,1 +1,6 @@
-{{ val }}
+<span class="val-number">{{ val }}</span><span class="val-unit">{{ unit_symbol }}</span>
+{% if pct is not none %}
+<div class="gauge-track" title="{{ eu_range.Low }} – {{ eu_range.High }} {{ unit_symbol }}">
+    <div class="gauge-fill" style="width: {{ pct | round(1) }}%"></div>
+</div>
+{% endif %}

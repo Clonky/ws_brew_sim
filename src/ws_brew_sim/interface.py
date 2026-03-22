@@ -108,9 +108,23 @@ def create_app(simulation: Simulation):
         module = next((mod for mod in unit.modules if mod.name == module_name), None)
         if module is None:
             return HTMLResponse(content=f"<h2>Module {module_name} not found in unit {unit_name}</h2>", status_code=404)
-        value = module.update_behaviour.state if module.update_behaviour else "N/A"
-        value = f"{value:.2f}" if isinstance(value, float) else str(value)
-        return templates.TemplateResponse("module_value.html", {"request": request, "val": value})
+        raw = module.update_behaviour.state if module.update_behaviour else None
+        value = f"{raw:.2f}" if isinstance(raw, float) else str(raw) if raw is not None else "N/A"
+        eu_range = module.eu_range
+        eu_info = module.eu_info
+        unit_symbol = eu_info.DisplayName.Text if eu_info else module.unit
+        pct = None
+        if eu_range is not None and isinstance(raw, (int, float)):
+            span = eu_range.High - eu_range.Low
+            if span > 0:
+                pct = max(0.0, min(100.0, (raw - eu_range.Low) / span * 100))
+        return templates.TemplateResponse("module_value.html", {
+            "request": request,
+            "val": value,
+            "unit_symbol": unit_symbol,
+            "eu_range": eu_range,
+            "pct": pct,
+        })
 
     @app.get("/show_unit/{unit_name}", response_class=HTMLResponse)
     async def show_unit(request: Request, unit_name: str):

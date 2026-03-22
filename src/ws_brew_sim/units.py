@@ -345,11 +345,11 @@ class TunnelOvenExample(Unit):
         # AnalogSignal nodes have DataType=Number (abstract); write as Double.
         # ProcessValueSetpoint nodes have DataType=Float; write as Float.
         modules = [
-            Temperature(ua.NodeId(6431, 15), 200.0, 2.0),  # TemperatureProductCore (°C)
-            Pressure(ua.NodeId(6423, 15), 0.02, 0.005),    # PressureChimneyFlueGas (bar)
-            Pressure(ua.NodeId(6427, 15), 0.015, 0.005),   # PressureChimneyFlueSteam (bar)
-            Pressure(ua.NodeId(6058, 15), 25.0, 0.1),      # EccentricSetpoint (Hz)
-            Pressure(ua.NodeId(6059, 15), 1.0, 0.01),      # PressureSetpoint (bar)
+            Temperature(ua.NodeId(6431, 15), 200.0, 2.0, low=0.0, high=300.0),   # TemperatureProductCore
+            Pressure(ua.NodeId(6423, 15), 0.02, 0.005, low=-0.5, high=0.5),      # PressureChimneyFlueGas
+            Pressure(ua.NodeId(6427, 15), 0.015, 0.005, low=-0.5, high=0.5),     # PressureChimneyFlueSteam
+            Pressure(ua.NodeId(6058, 15), 25.0, 0.1, low=0.0, high=100.0),       # EccentricSetpoint
+            Pressure(ua.NodeId(6059, 15), 1.0, 0.01, low=0.0, high=10.0),        # PressureSetpoint
         ]
         for m in modules[:3]:   # AnalogSignal nodes → Double
             m.variant_type = ua.VariantType.Double
