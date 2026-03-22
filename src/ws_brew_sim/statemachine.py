@@ -1,17 +1,19 @@
 from __future__ import annotations
-from dataclasses import dataclass, field
-from asyncua import Server
-from asyncua.ua import NodeId
-from asyncua.common import Node
+
 import logging
+from dataclasses import dataclass, field
+
+from asyncua import Server
+from asyncua.common import Node
+from asyncua.ua import NodeId
 
 logger = logging.getLogger(__name__)
-
 
 
 TRANSITION_ID = 2310
 STATE_ID = 2307
 CURRENT_STATE_ID = 2760
+
 
 @dataclass
 class State:
@@ -25,11 +27,13 @@ class State:
     def __repr__(self):
         return f"State(name={self.name}, node_id={self.node.nodeid}, state_number={self.state_number})"
 
+
 @dataclass
 class Transition:
     name: str
     node: Node
     transition_number: int
+
 
 @dataclass
 class StateMachineLevel:
@@ -38,7 +42,9 @@ class StateMachineLevel:
     possible_transitions: list[Transition]
 
     async def write_state(self, state_name: str) -> None:
-        state = next((state for state in self.possible_states if state.name == state_name), None)
+        state = next(
+            (state for state in self.possible_states if state.name == state_name), None
+        )
         if state:
             logger.info("Writing state %s to node %s", state, self.curr_state)
             await self.curr_state.write_value(state.state_number)
@@ -53,54 +59,101 @@ class StateMachineTree:
 
     @classmethod
     async def build_tree_operation_mode(cls, server: Server, parent_node_id: NodeId):
-        parent_node = server.get_node(parent_node_id)
-        operation_mode_node = await parent_node.get_child(["4:Monitoring", "4:Status", "4:OperationMode"])
-        root = await cls.get_states_and_transitions(server, operation_mode_node.nodeid)
+        try:
+            parent_node = server.get_node(parent_node_id)
+            operation_mode_node = await parent_node.get_child(
+                ["8:Monitoring", "8:Status", "12:OperatingMode"]
+            )
+            root = await cls.get_states_and_transitions(
+                server, operation_mode_node.nodeid
+            )
+        except Exception:
+            logger.warning("OperatingMode state machine not found under node %s", parent_node_id)
+            return None
         return cls(root)
 
     @classmethod
     async def build_tree_machine_state(cls, server: Server, parent_node_id: NodeId):
-        machinery_idx = await server.get_namespace_index("http://opcfoundation.org/UA/Machinery/")
-        machine_state_node = server.get_node(NodeId(1002, machinery_idx))
-        parent_node = server.get_node(parent_node_id)
-        machine_state_local = await parent_node.get_child(["4:Monitoring", "4:Status", f"{machinery_idx}:MachineryItemState"])
-        root = await cls.get_states_and_transitions(server, machine_state_local.nodeid, src_override=machine_state_node.nodeid)
+        try:
+            machinery_idx = await server.get_namespace_index(
+                "http://opcfoundation.org/UA/Machinery/"
+            )
+            machine_state_node = server.get_node(NodeId(1002, machinery_idx))
+            parent_node = server.get_node(parent_node_id)
+            machine_state_local = await parent_node.get_child(
+                [
+                    f"{machinery_idx}:Monitoring",
+                    f"{machinery_idx}:Status",
+                    f"{machinery_idx}:MachineryItemState",
+                ]
+            )
+            root = await cls.get_states_and_transitions(
+                server, machine_state_local.nodeid, src_override=machine_state_node.nodeid
+            )
+        except Exception:
+            logger.warning("MachineryItemState not found under node %s", parent_node_id)
+            return None
         return cls(root)
 
     @staticmethod
-    async def get_states_and_transitions(server: Server, parent_node_id: NodeId, src_override: NodeId | None = None):
+    async def get_states_and_transitions(
+        server: Server, parent_node_id: NodeId, src_override: NodeId | None = None
+    ):
         states_and_transitions = await server.get_node(parent_node_id).get_children()
         if src_override:
             states_and_transitions = await server.get_node(src_override).get_children()
-        current_state_node = await server.get_node(parent_node_id).get_child("0:CurrentState")
+        current_state_node = await server.get_node(parent_node_id).get_child(
+            "0:CurrentState"
+        )
         logger.warn(current_state_node)
-        states = [istate for istate in states_and_transitions if await istate.read_type_definition() ==  NodeId(STATE_ID)]
-        states = [State(
-            name = (await istate.read_display_name()).Text,
-            node=istate,
-            state_number= await (await istate.get_child("0:StateNumber")).read_value(),
-            curr_state_node=current_state_node
-            ) for istate in states
+        states = [
+            istate
+            for istate in states_and_transitions
+            if await istate.read_type_definition() == NodeId(STATE_ID)
         ]
-        substates = [istate for istate in states_and_transitions if
-                      await istate.read_type_definition() !=  NodeId(STATE_ID) and
-                      await istate.read_type_definition() !=  NodeId(TRANSITION_ID) and
-                      await istate.read_type_definition() !=  NodeId(CURRENT_STATE_ID) and
-                      (await istate.read_display_name()).Text != "DefaultInstanceBrowseName"]
+        states = [
+            State(
+                name=(await istate.read_display_name()).Text,
+                node=istate,
+                state_number=await (
+                    await istate.get_child("0:StateNumber")
+                ).read_value(),
+                curr_state_node=current_state_node,
+            )
+            for istate in states
+        ]
+        substates = [
+            istate
+            for istate in states_and_transitions
+            if await istate.read_type_definition() != NodeId(STATE_ID)
+            and await istate.read_type_definition() != NodeId(TRANSITION_ID)
+            and await istate.read_type_definition() != NodeId(CURRENT_STATE_ID)
+            and (await istate.read_display_name()).Text != "DefaultInstanceBrowseName"
+        ]
         if substates:
             for istate, isubstate in zip(states, substates):
                 logger.info("Adding state: %s", istate)
-                istate.substates = await StateMachineTree.get_states_and_transitions(server, isubstate.nodeid)
-        transitions = [itransition for itransition in states_and_transitions if await itransition.read_type_definition() ==  NodeId(TRANSITION_ID)]
-        transitions = [Transition(
-            name = (await itransition.read_display_name()).Text,
-            node=itransition,
-            transition_number= await (await itransition.get_child("0:TransitionNumber")).read_value()
-            ) for itransition in transitions
+                istate.substates = await StateMachineTree.get_states_and_transitions(
+                    server, isubstate.nodeid
+                )
+        transitions = [
+            itransition
+            for itransition in states_and_transitions
+            if await itransition.read_type_definition() == NodeId(TRANSITION_ID)
+        ]
+        transitions = [
+            Transition(
+                name=(await itransition.read_display_name()).Text,
+                node=itransition,
+                transition_number=await (
+                    await itransition.get_child("0:TransitionNumber")
+                ).read_value(),
+            )
+            for itransition in transitions
         ]
         return StateMachineLevel(current_state_node, states, transitions)
 
-    def __getitem__(self, name:str) -> State | None:
+    def __getitem__(self, name: str) -> State | None:
         states = self.get_all_states()
         return next((istate for istate in states if istate.name == name), None)
 
@@ -120,7 +173,9 @@ class StateMachineTree:
         return collect_states(self.root)
 
     def get_path_to_state(self, target_state_name: str) -> list[State] | None:
-        def find_path(level: StateMachineLevel, path: list[State]) -> list[State] | None:
+        def find_path(
+            level: StateMachineLevel, path: list[State]
+        ) -> list[State] | None:
             for state in level.possible_states:
                 new_path = path + [state]
                 if state.name == target_state_name:
@@ -153,7 +208,7 @@ class StateMachineTree:
         states = self.get_path_to_state("Production")
         for state in states:
             state.active = True
-    
+
     def stop_production(self):
         self.disable_all_states()
         states = self.get_path_to_state("Production")
@@ -169,9 +224,9 @@ class StateMachineTree:
             for istate in state.substates.possible_states:
                 return collection + self.recursively_get_states(istate, collection)
 
+
 @dataclass
 class MachineState(StateMachineTree):
-
     def __post_init__(self):
         self.set_default()
 
@@ -189,6 +244,3 @@ class MachineState(StateMachineTree):
 
     def set_default(self):
         self.stop_production()
-
-
-        

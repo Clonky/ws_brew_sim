@@ -1,21 +1,23 @@
 from __future__ import annotations
+
+import asyncio
+import logging
 from collections import deque
 from typing import TYPE_CHECKING
 from uuid import uuid4
-from .events import TransferEvent, Event, UnitProcedureEvent
-from .modules import Volume, Module, Temperature, Turbidity, Timer, Pressure
-from asyncua import Server
+
+from asyncua import Server, ua
 from asyncua.common.node import Node
-from asyncua import ua
 from asyncua.server.event_generator import EventGenerator
-import asyncio
-import logging
-from .jobs import JobState, TransferJob, FilterJob
-from .statemachine import StateMachineTree, MachineState
+
+from .events import Event, TransferEvent, UnitProcedureEvent
+from .jobs import FilterJob, JobState, TransferJob
+from .modules import Module, Pressure, Temperature, Timer, Turbidity, Volume
+from .statemachine import MachineState, StateMachineTree
 
 if TYPE_CHECKING:
+    from .jobs import Job, JobState, TransferJob
     from .simulation import Simulation
-    from .jobs import JobState, TransferJob, Job
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +25,14 @@ TIME_NODE = ua.NodeId(2258, 0)
 
 
 class Unit:
-    def __init__(self, name: str, node_id: ua.NodeId, simulation: "Simulation", modules: list[Module] = [], initial_operation_mode=""):
+    def __init__(
+        self,
+        name: str,
+        node_id: ua.NodeId,
+        simulation: "Simulation",
+        modules: list[Module] = [],
+        initial_operation_mode="",
+    ):
         self.asset_id = str(uuid4())[:12]
         self.serial_number = str(uuid4())[:12]
         self.name = name
@@ -72,16 +81,29 @@ class Unit:
                 self.job = associated_jobs
 
     async def _set_static_vals(self):
-        asset_id_node = await self.node.get_child(["2:Identification", "2:AssetId"])
-        await asset_id_node.write_value(self.asset_id)
-        serial_number_node = await self.node.get_child(["2:Identification", "2:SerialNumber"])
-        await serial_number_node.write_value(self.serial_number)
+        try:
+            asset_id_node = await self.node.get_child(
+                [("8:Monitoring", "8:Status", "7:Identification", "7:AssetId")]
+            )
+            await asset_id_node.write_value(self.asset_id)
+            serial_number_node = await self.node.get_child(
+                [("8:Monitoring", "8:Status", "7:Identification", "7:SerialNumber")]
+            )
+            await serial_number_node.write_value(self.serial_number)
+        except:
+            return
 
     async def _set_up_statemachines(self):
-        self.statemachine_operation_mode = await StateMachineTree.build_tree_operation_mode(self.simulation.server, self.node_id)
-        if self.initial_operation_mode:
+        self.statemachine_operation_mode = (
+            await StateMachineTree.build_tree_operation_mode(
+                self.simulation.server, self.node_id
+            )
+        )
+        if self.initial_operation_mode and self.statemachine_operation_mode:
             self.statemachine_operation_mode.activate_state(self.initial_operation_mode)
-        self.statemachine_machine_state = await MachineState.build_tree_machine_state(self.simulation.server, self.node_id)
+        self.statemachine_machine_state = await MachineState.build_tree_machine_state(
+            self.simulation.server, self.node_id
+        )
 
     async def _set_internal_static_state(self):
         if self.node:
@@ -94,10 +116,11 @@ class Unit:
             logger.info(f"Module {self.name} connected to node {self.node}")
             await self._set_internal_static_state()
             await self._setup_evgen(server)
-            event = await TransferEvent.from_nodes(
-                self.node, self.node, "batch_001", self.evgen["TransferEvent"], server
-            )
-            self.curr_event = event
+            if "TransferEvent" in self.evgen:
+                event = await TransferEvent.from_nodes(
+                    self.node, self.node, "batch_001", self.evgen["TransferEvent"], server
+                )
+                self.curr_event = event
 
         for module in self.modules:
             await module.connect(server)
@@ -106,15 +129,23 @@ class Unit:
         pass
 
     async def _create_transfer_event_generator(self, server: Server):
-        ws_basis_idx = await server.get_namespace_index("http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/")
-        etype = await server.nodes.base_event_type.get_child(f"{ws_basis_idx}:WSTransferEventType")
+        ws_basis_idx = await server.get_namespace_index(
+            "http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/"
+        )
+        etype = await server.nodes.base_event_type.get_child(
+            f"{ws_basis_idx}:WSTransferEventType"
+        )
         target = server.get_node(self.node_id)
         transfer_gen: EventGenerator = await server.get_event_generator(etype, target)
         return transfer_gen
 
     async def _create_process_event_generator(self, server: Server):
-        ws_brew_idx = await server.get_namespace_index("http://opcfoundation.org/UA/WeihenstephanStandards/WSBrew/")
-        etype = await server.nodes.base_event_type.get_child(f"{ws_brew_idx}:WSUnitProcedureEventType")
+        ws_brew_idx = await server.get_namespace_index(
+            "http://opcfoundation.org/UA/WeihenstephanStandards/WSBrew/"
+        )
+        etype = await server.nodes.base_event_type.get_child(
+            f"{ws_brew_idx}:WSUnitProcedureEventType"
+        )
         target = server.get_node(self.node_id)
         process_gen: EventGenerator = await server.get_event_generator(etype, target)
         return process_gen
@@ -126,7 +157,13 @@ class Unit:
 
 class Tank(Unit):
     def __init__(
-        self, name: str, node_id: ua.NodeId, simulation: Simulation, initial_vol=0, modules: list[Module] = [], **kwargs
+        self,
+        name: str,
+        node_id: ua.NodeId,
+        simulation: Simulation,
+        initial_vol=0,
+        modules: list[Module] = [],
+        **kwargs,
     ):
         super().__init__(name, node_id, simulation, **kwargs)
         if not any(m.name == "Volume" for m in modules):
@@ -143,13 +180,22 @@ class Tank(Unit):
                 # Initialize events over here
                 time = await self.simulation.server.get_node(TIME_NODE).read_value()
                 if self.evgen.get("TransferEvent") is None:
-                    self.evgen["TransferEvent"] = await self.create_transfer_event_generator(self.simulation.server)
-                self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
+                    self.evgen[
+                        "TransferEvent"
+                    ] = await self.create_transfer_event_generator(
+                        self.simulation.server
+                    )
+                self.event = await TransferEvent.from_job(
+                    self.job, self.evgen["TransferEvent"], time, "batch_001"
+                )
                 self.job.state = JobState.RUNNING
                 self.statemachine_operation_mode.start_production()
                 self.statemachine_operation_mode.default_mode = "Used"
                 self.statemachine_machine_state.start_production()
-            elif self.job.state == JobState.RUNNING and self.statemachine_operation_mode.is_in_production():
+            elif (
+                self.job.state == JobState.RUNNING
+                and self.statemachine_operation_mode.is_in_production()
+            ):
                 # Perform transfer here
                 self.job.run(self)
             elif self.job.state == JobState.COMPLETED:
@@ -182,17 +228,35 @@ class Tank(Unit):
 class FermentationTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=1000):
         modules = [Temperature(ua.NodeId(6277, 15), 12, 0.5), Volume(initial_vol)]
-        super().__init__("FermentationTank", ua.NodeId(5209, 15), simulation, modules=modules, initial_operation_mode="Used")
+        super().__init__(
+            "FermentationTank",
+            ua.NodeId(5209, 15),
+            simulation,
+            modules=modules,
+            initial_operation_mode="Used",
+        )
 
 
 class BrightBeerTankExample(Tank):
     def __init__(self, simulation: Simulation, initial_vol=0):
         modules = [Volume(initial_vol)]
-        super().__init__("BrightBeerTank", ua.NodeId(5001, 15), simulation, modules=modules, initial_operation_mode="Sterile")
+        super().__init__(
+            "BrightBeerTank",
+            ua.NodeId(5001, 15),
+            simulation,
+            modules=modules,
+            initial_operation_mode="Sterile",
+        )
 
 
 class SheetFilter(Unit):
-    def __init__(self, simulation: Simulation, nodeid: ua.NodeId, modules: list[Module] = [], **kwargs):
+    def __init__(
+        self,
+        simulation: Simulation,
+        nodeid: ua.NodeId,
+        modules: list[Module] = [],
+        **kwargs,
+    ):
         super().__init__("SheetFilter", nodeid, simulation, modules=modules, **kwargs)
         self.volume = 0
         self.volume_filtered = 0
@@ -241,7 +305,9 @@ class SheetFilter(Unit):
             )
         elif isinstance(self.job, TransferJob):
             time = await self._get_servertime()
-            self.event = await TransferEvent.from_job(self.job, self.evgen["TransferEvent"], time, "batch_001")
+            self.event = await TransferEvent.from_job(
+                self.job, self.evgen["TransferEvent"], time, "batch_001"
+            )
 
 
 class SheetFilterExample(SheetFilter):
@@ -252,5 +318,59 @@ class SheetFilterExample(SheetFilter):
             Turbidity(ua.NodeId(6153, 15), 0.5, 0.1),
             Volume(0),
         ]
-        super().__init__(simulation, ua.NodeId(5100, 15), modules=modules, initial_operation_mode="Sterile")
+        super().__init__(
+            simulation,
+            ua.NodeId(5100, 15),
+            modules=modules,
+            initial_operation_mode="Sterile",
+        )
         self.volume = next((m for m in self.modules if m.name == "Volume"), None)
+
+
+class TunnelOvenExample(Unit):
+    """Tunnel oven unit wired to ns=15 (http://bake.example.com) at runtime.
+
+    Runtime namespace indices (server loads xmls/ alphabetically):
+      ns=15 → http://bake.example.com  (114_tunnel_oven.NodeSet2.xml instances)
+
+    Sensors:
+      - TemperatureProductCore   ns=15;i=6431
+      - PressureChimneyFlueGas   ns=15;i=6423
+      - PressureChimneyFlueSteam ns=15;i=6427
+      - EccentricSetpoint        ns=15;i=6058  (stable setpoint ~25 Hz)
+      - PressureSetpoint         ns=15;i=6059  (stable setpoint ~1.0 bar)
+    """
+
+    def __init__(self, simulation: Simulation):
+        # AnalogSignal nodes have DataType=Number (abstract); write as Double.
+        # ProcessValueSetpoint nodes have DataType=Float; write as Float.
+        modules = [
+            Temperature(ua.NodeId(6431, 15), 200.0, 2.0),  # TemperatureProductCore (°C)
+            Pressure(ua.NodeId(6423, 15), 0.02, 0.005),    # PressureChimneyFlueGas (bar)
+            Pressure(ua.NodeId(6427, 15), 0.015, 0.005),   # PressureChimneyFlueSteam (bar)
+            Pressure(ua.NodeId(6058, 15), 25.0, 0.1),      # EccentricSetpoint (Hz)
+            Pressure(ua.NodeId(6059, 15), 1.0, 0.01),      # PressureSetpoint (bar)
+        ]
+        for m in modules[:3]:   # AnalogSignal nodes → Double
+            m.variant_type = ua.VariantType.Double
+        for m in modules[3:]:   # ProcessValueSetpoint nodes → Float
+            m.variant_type = ua.VariantType.Float
+        super().__init__(
+            "TunnelOven",
+            ua.NodeId(5001, 15),
+            simulation,
+            modules=modules,
+            initial_operation_mode="Sterile",
+        )
+
+    async def run(self):
+        for module in self.modules:
+            await module.run()
+        if self.job:
+            await self._handle_job()
+        else:
+            self._check_jobs()
+        await asyncio.sleep(0.5)
+
+    async def _setup_evgen(self, server: Server):
+        pass

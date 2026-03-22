@@ -14,12 +14,13 @@ logger = logging.getLogger(__name__)
 
 
 class Module:
-    def __init__(self, name: str, node_id: NodeId | None, update_behaviour=None, unit: str | None = None):
+    def __init__(self, name: str, node_id: NodeId | None, update_behaviour=None, unit: str | None = None, variant_type=None):
         self.name = name
         self.node_id = node_id
         self.node = None
         self.update_behaviour = update_behaviour
         self.unit = unit
+        self.variant_type = variant_type
 
     async def connect(self, server: Server):
         if not self.node:
@@ -33,7 +34,11 @@ class Module:
             self.update_behaviour.update()
             if self.node is not None:
                 logger.debug("Updating node %s to state %s", self.node, self.update_behaviour.state)
-                await self.node.write_value(self.update_behaviour.state)
+                if self.variant_type is not None:
+                    from asyncua import ua as _ua
+                    await self.node.write_value(_ua.DataValue(_ua.Variant(self.update_behaviour.state, self.variant_type)))
+                else:
+                    await self.node.write_value(self.update_behaviour.state)
 
     def register(self, unit: "Unit"):
         unit.register_module(self)
