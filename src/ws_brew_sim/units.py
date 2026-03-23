@@ -346,51 +346,30 @@ class TunnelOvenExample(Unit):
     """
 
     def __init__(self, simulation: Simulation):
-        # AnalogSignal nodes have DataType=Number (abstract); write as Double.
-        # ProcessValueSetpoint nodes have DataType=Float; write as Float.
+        # Placeholder node IDs (ns=15) are replaced with correct indices in connect().
         modules = [
-            Temperature(
-                ua.NodeId(6431, 15), 200.0, 2.0, low=0.0, high=300.0
-            ),  # TemperatureProductCore
-            Pressure(
-                ua.NodeId(6423, 15), 0.02, 0.005, low=-0.5, high=0.5
-            ),  # PressureChimneyFlueGas
-            Pressure(
-                ua.NodeId(6427, 15), 0.015, 0.005, low=-0.5, high=0.5
-            ),  # PressureChimneyFlueSteam
-            Pressure(
-                ua.NodeId(6058, 15), 25.0, 0.1, low=0.0, high=100.0
-            ),  # EccentricSetpoint
-            Pressure(
-                ua.NodeId(6059, 15), 1.0, 0.01, low=0.0, high=10.0
-            ),  # PressureSetpoint
+            Temperature(ua.NodeId(6431, 15), 200.0, 2.0, low=0.0, high=300.0),  # TemperatureProductCore
+            Pressure(ua.NodeId(6423, 15), 0.02, 0.005, low=-0.5, high=0.5),     # PressureChimneyFlueGas
+            Pressure(ua.NodeId(6427, 15), 0.015, 0.005, low=-0.5, high=0.5),    # PressureChimneyFlueSteam
         ]
-        for m in modules[:3]:  # AnalogSignal nodes → Double
-            m.variant_type = ua.VariantType.Double
-        for m in modules[3:]:  # ProcessValueSetpoint nodes → Float
-            m.variant_type = ua.VariantType.Float
         super().__init__(
             "TunnelOven",
             ua.NodeId(5001, 15),
             simulation,
             modules=modules,
-            initial_operation_mode="Sterile",
+            initial_operation_mode="None",
         )
 
     async def connect(self, server: Server):
         nsidx = await server.get_namespace_index("http://bake.example.com")
         self.node_id = ua.NodeId(5001, nsidx)
         self.modules = [
-            Temperature(
-                ua.NodeId(6431, nsidx), 200.0, 2.0, low=0.0, high=300.0
-            ),  # TemperatureProductCore
-            Pressure(
-                ua.NodeId(6423, nsidx), 0.02, 0.005, low=-0.5, high=0.5
-            ),  # PressureChimneyFlueGas
-            Pressure(
-                ua.NodeId(6427, nsidx), 0.015, 0.005, low=-0.5, high=0.5
-            ),  # PressureChimneyFlueSteam
+            Temperature(ua.NodeId(6431, nsidx), 200.0, 2.0, low=0.0, high=300.0),  # TemperatureProductCore
+            Pressure(ua.NodeId(6423, nsidx), 0.02, 0.005, low=-0.5, high=0.5),     # PressureChimneyFlueGas
+            Pressure(ua.NodeId(6427, nsidx), 0.015, 0.005, low=-0.5, high=0.5),    # PressureChimneyFlueSteam
         ]
+        for m in self.modules:
+            m.variant_type = ua.VariantType.Double
         await super().connect(server)
 
     async def run(self):

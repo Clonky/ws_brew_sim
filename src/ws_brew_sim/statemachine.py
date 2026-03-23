@@ -60,13 +60,26 @@ class StateMachineTree:
     @classmethod
     async def build_tree_operation_mode(cls, server: Server, parent_node_id: NodeId):
         try:
+            machinery_idx = await server.get_namespace_index(
+                "http://opcfoundation.org/UA/Machinery/"
+            )
+            wsbasis_idx = await server.get_namespace_index(
+                "http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/"
+            )
             parent_node = server.get_node(parent_node_id)
-            operation_mode_node = await parent_node.get_child(
-                ["8:Monitoring", "8:Status", "12:OperatingMode"]
-            )
-            root = await cls.get_states_and_transitions(
-                server, operation_mode_node.nodeid
-            )
+            try:
+                operation_mode_node = await parent_node.get_child(
+                    [f"{machinery_idx}:Monitoring", f"{machinery_idx}:Status", f"{wsbasis_idx}:OperatingMode"]
+                )
+                root = await cls.get_states_and_transitions(server, operation_mode_node.nodeid)
+                if not root.possible_states:
+                    raise ValueError("No states in primary OperatingMode path")
+            except Exception:
+                # Fallback: try Monitoring/Consumption/OperationMode (e.g. TunnelOven)
+                operation_mode_node = await parent_node.get_child(
+                    [f"{machinery_idx}:Monitoring", f"{machinery_idx}:Consumption", f"{machinery_idx}:OperationMode"]
+                )
+                root = await cls.get_states_and_transitions(server, operation_mode_node.nodeid)
         except Exception:
             logger.warning("OperatingMode state machine not found under node %s", parent_node_id)
             return None
@@ -80,13 +93,19 @@ class StateMachineTree:
             )
             machine_state_node = server.get_node(NodeId(1002, machinery_idx))
             parent_node = server.get_node(parent_node_id)
-            machine_state_local = await parent_node.get_child(
-                [
-                    f"{machinery_idx}:Monitoring",
-                    f"{machinery_idx}:Status",
-                    f"{machinery_idx}:MachineryItemState",
-                ]
-            )
+            try:
+                machine_state_local = await parent_node.get_child(
+                    [
+                        f"{machinery_idx}:Monitoring",
+                        f"{machinery_idx}:Status",
+                        f"{machinery_idx}:MachineryItemState",
+                    ]
+                )
+            except Exception:
+                # Fallback: MachineryItemState may be directly under the parent node
+                machine_state_local = await parent_node.get_child(
+                    f"{machinery_idx}:MachineryItemState"
+                )
             root = await cls.get_states_and_transitions(
                 server, machine_state_local.nodeid, src_override=machine_state_node.nodeid
             )
@@ -190,6 +209,9 @@ class StateMachineTree:
 
     def activate_state(self, statename: str):
         states = self.get_path_to_state(statename)
+        if states is None:
+            logger.warning("State '%s' not found in state machine", statename)
+            return
         for state in states:
             state.active = True
 
@@ -200,20 +222,23 @@ class StateMachineTree:
 
     def is_in_production(self):
         states = self.get_path_to_state("Production")
-        production = states[-1]
-        return production.active
+        if not states:
+            return False
+        return states[-1].active
 
     def start_production(self):
         self.disable_all_states()
         states = self.get_path_to_state("Production")
-        for state in states:
-            state.active = True
+        if states:
+            for state in states:
+                state.active = True
 
     def stop_production(self):
         self.disable_all_states()
         states = self.get_path_to_state("Production")
-        for state in states:
-            state.active = False
+        if states:
+            for state in states:
+                state.active = False
 
     def recursively_get_states(self, state: State, collection: list[State]):
         if state.substates == []:
@@ -233,14 +258,16 @@ class MachineState(StateMachineTree):
     def start_production(self):
         self.disable_all_states()
         states = self.get_path_to_state("Executing")
-        for state in states:
-            state.active = True
+        if states:
+            for state in states:
+                state.active = True
 
     def stop_production(self):
         self.disable_all_states()
         states = self.get_path_to_state("NotExecuting")
-        for state in states:
-            state.active = True
+        if states:
+            for state in states:
+                state.active = True
 
     def set_default(self):
         self.stop_production()
