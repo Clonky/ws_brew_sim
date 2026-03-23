@@ -351,16 +351,39 @@ class TunnelOvenExample(Unit):
       - PressureSetpoint         ns=15;i=6059  (stable setpoint ~1.0 bar)
     """
 
+    ID_TUNNEL_OVEN = 5001
+    ID_TEMP_PRODUCT_CORE = 6262
+    ID_PRESSURE_FLUE_GAS = 6252
+    ID_PRESSURE_CHIMNEY = 6256
+
     def __init__(self, simulation: Simulation):
         # Placeholder node IDs (ns=15) are replaced with correct indices in connect().
         modules = [
-            Temperature(ua.NodeId(6431, 15), 200.0, 2.0, low=0.0, high=300.0),  # TemperatureProductCore
-            Pressure(ua.NodeId(6423, 15), 0.02, 0.005, low=-0.5, high=0.5),     # PressureChimneyFlueGas
-            Pressure(ua.NodeId(6427, 15), 0.015, 0.005, low=-0.5, high=0.5),    # PressureChimneyFlueSteam
+            Temperature(
+                ua.NodeId(self.ID_TEMP_PRODUCT_CORE, 15),
+                200.0,
+                2.0,
+                low=0.0,
+                high=300.0,
+            ),  # TemperatureProductCore
+            Pressure(
+                ua.NodeId(self.ID_PRESSURE_FLUE_GAS, 15),
+                0.02,
+                0.005,
+                low=-0.5,
+                high=0.5,
+            ),  # PressureChimneyFlueGas
+            Pressure(
+                ua.NodeId(self.ID_PRESSURE_CHIMNEY, 15),
+                0.015,
+                0.005,
+                low=-0.5,
+                high=0.5,
+            ),  # PressureChimneyFlueSteam
         ]
         super().__init__(
             "TunnelOven",
-            ua.NodeId(5001, 15),
+            ua.NodeId(self.ID_TUNNEL_OVEN, 15),
             simulation,
             modules=modules,
             initial_operation_mode="None",
@@ -368,11 +391,29 @@ class TunnelOvenExample(Unit):
 
     async def connect(self, server: Server):
         nsidx = await server.get_namespace_index("http://bake.example.com")
-        self.node_id = ua.NodeId(5001, nsidx)
+        self.node_id = ua.NodeId(self.ID_TUNNEL_OVEN, nsidx)
         self.modules = [
-            Temperature(ua.NodeId(6431, nsidx), 200.0, 2.0, low=0.0, high=300.0),  # TemperatureProductCore
-            Pressure(ua.NodeId(6423, nsidx), 0.02, 0.005, low=-0.5, high=0.5),     # PressureChimneyFlueGas
-            Pressure(ua.NodeId(6427, nsidx), 0.015, 0.005, low=-0.5, high=0.5),    # PressureChimneyFlueSteam
+            Temperature(
+                ua.NodeId(self.ID_TEMP_PRODUCT_CORE, nsidx),
+                200.0,
+                2.0,
+                low=0.0,
+                high=300.0,
+            ),  # TemperatureProductCore
+            Pressure(
+                ua.NodeId(self.ID_PRESSURE_FLUE_GAS, nsidx),
+                0.02,
+                0.005,
+                low=-0.5,
+                high=0.5,
+            ),  # PressureChimneyFlueGas
+            Pressure(
+                ua.NodeId(self.ID_PRESSURE_CHIMNEY, nsidx),
+                0.015,
+                0.005,
+                low=-0.5,
+                high=0.5,
+            ),  # PressureChimneyFlueSteam
         ]
         for m in self.modules:
             m.variant_type = ua.VariantType.Double

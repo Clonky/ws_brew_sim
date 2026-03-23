@@ -63,25 +63,39 @@ class StateMachineTree:
             machinery_idx = await server.get_namespace_index(
                 "http://opcfoundation.org/UA/Machinery/"
             )
-            wsbasis_idx = await server.get_namespace_index(
+            _wsbasis_idx = await server.get_namespace_index(
                 "http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/"
             )
             parent_node = server.get_node(parent_node_id)
             try:
                 operation_mode_node = await parent_node.get_child(
-                    [f"{machinery_idx}:Monitoring", f"{machinery_idx}:Status", f"{wsbasis_idx}:OperatingMode"]
+                    [
+                        f"{machinery_idx}:Monitoring",
+                        f"{machinery_idx}:Status",
+                        f"{machinery_idx}:OperationMode",
+                    ]
                 )
-                root = await cls.get_states_and_transitions(server, operation_mode_node.nodeid)
+                root = await cls.get_states_and_transitions(
+                    server, operation_mode_node.nodeid
+                )
                 if not root.possible_states:
                     raise ValueError("No states in primary OperatingMode path")
             except Exception:
                 # Fallback: try Monitoring/Consumption/OperationMode (e.g. TunnelOven)
                 operation_mode_node = await parent_node.get_child(
-                    [f"{machinery_idx}:Monitoring", f"{machinery_idx}:Consumption", f"{machinery_idx}:OperationMode"]
+                    [
+                        f"{machinery_idx}:Monitoring",
+                        f"{machinery_idx}:Consumption",
+                        f"{machinery_idx}:OperationMode",
+                    ]
                 )
-                root = await cls.get_states_and_transitions(server, operation_mode_node.nodeid)
+                root = await cls.get_states_and_transitions(
+                    server, operation_mode_node.nodeid
+                )
         except Exception:
-            logger.warning("OperatingMode state machine not found under node %s", parent_node_id)
+            logger.warning(
+                "OperatingMode state machine not found under node %s", parent_node_id
+            )
             return None
         return cls(root)
 
@@ -102,14 +116,21 @@ class StateMachineTree:
             )
             parent_node = server.get_node(parent_node_id)
             operating_mode_node = await parent_node.get_child(
-                [f"{machinery_idx}:Monitoring", f"{machinery_idx}:Status", f"{wsbasis_idx}:OperatingMode"]
+                [
+                    f"{machinery_idx}:Monitoring",
+                    f"{machinery_idx}:Status",
+                    f"{wsbasis_idx}:OperatingMode",
+                ]
             )
             type_node_id = NodeId(10012, wsbasis_idx)
             root = await cls.get_states_and_transitions(
-                server, operating_mode_node.nodeid, src_override=type_node_id
+                server, operating_mode_node.nodeid
             )
         except Exception:
-            logger.warning("OperatingMode (DIN IEC) state machine not found under node %s", parent_node_id)
+            logger.warning(
+                "OperatingMode (DIN IEC) state machine not found under node %s",
+                parent_node_id,
+            )
             return None
         return cls(root)
 
@@ -135,7 +156,9 @@ class StateMachineTree:
                     f"{machinery_idx}:MachineryItemState"
                 )
             root = await cls.get_states_and_transitions(
-                server, machine_state_local.nodeid, src_override=machine_state_node.nodeid
+                server,
+                machine_state_local.nodeid,
+                src_override=machine_state_node.nodeid,
             )
         except Exception:
             logger.warning("MachineryItemState not found under node %s", parent_node_id)

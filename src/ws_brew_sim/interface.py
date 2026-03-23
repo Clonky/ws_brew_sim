@@ -1,16 +1,18 @@
-from fastapi import FastAPI, Request, Form
+from typing import Annotated
+from uuid import uuid4
+
+import uvicorn
+from asyncua import ua
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from uuid import uuid4
-from typing import Annotated
-import uvicorn
-from ws_brew_sim.units import Unit
-from ws_brew_sim.simulation import Simulation
-from ws_brew_sim.jobs import TransferJob, JobState, FilterJob
-from asyncua import ua
 
-    
+from ws_brew_sim.jobs import FilterJob, JobState, TransferJob
+from ws_brew_sim.simulation import Simulation
+from ws_brew_sim.units import Unit
+
+
 def create_app(simulation: Simulation):
     app = FastAPI()
     app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -18,17 +20,38 @@ def create_app(simulation: Simulation):
     templates = Jinja2Templates(directory="templates")
 
     @app.post("/transfer_job")
-    async def create_transfer_job(source_name: Annotated[str, Form()], target_name: Annotated[str, Form()], amount: Annotated[int, Form()], rate: Annotated[int, Form()]):
-        source = next((unit for unit in simulation.units if unit.name == source_name), None)
-        target = next((unit for unit in simulation.units if unit.name == target_name), None)
+    async def create_transfer_job(
+        source_name: Annotated[str, Form()],
+        target_name: Annotated[str, Form()],
+        amount: Annotated[int, Form()],
+        rate: Annotated[int, Form()],
+    ):
+        source = next(
+            (unit for unit in simulation.units if unit.name == source_name), None
+        )
+        target = next(
+            (unit for unit in simulation.units if unit.name == target_name), None
+        )
         if source is None or target is None:
             return {"error": "Source or target unit not found"}
-        job = TransferJob(name=source_name, job_id=str(uuid4()), state=JobState.PENDING, source=source, target=target, amount=amount, rate=rate)
+        job = TransferJob(
+            name=source_name,
+            job_id=str(uuid4()),
+            state=JobState.PENDING,
+            source=source,
+            target=target,
+            amount=amount,
+            rate=rate,
+        )
         source.add_job(job)
         return {"message": f"Transfer job from {source_name} to {target_name} added."}
-    
+
     @app.post("/filter_job")
-    async def create_procedure_job(unit_name: Annotated[str, Form()], batch_id: Annotated[str, Form()], amount: Annotated[int, Form()]):
+    async def create_procedure_job(
+        unit_name: Annotated[str, Form()],
+        batch_id: Annotated[str, Form()],
+        amount: Annotated[int, Form()],
+    ):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
         if unit is None:
             return {"error": "Unit not found"}
@@ -40,7 +63,7 @@ def create_app(simulation: Simulation):
             filter_rate=10,
             amount_filtered=0,
             amount_to_filter=amount,
-            )
+        )
         unit.add_job(job)
         return {"message": f"Filter job for unit {unit} added."}
 
@@ -54,21 +77,36 @@ def create_app(simulation: Simulation):
 
     @app.get("/units", response_class=HTMLResponse)
     async def index_units(request: Request):
-        return templates.TemplateResponse("units.html", {"request": request, "units": simulation.units})
+        return templates.TemplateResponse(
+            "units.html", {"request": request, "units": simulation.units}
+        )
 
     @app.get("/statemachine/{unit_name}/")
-    async def get_statemachine(request: Request,unit_name: str,  statename: str):
+    async def get_statemachine(request: Request, unit_name: str, statename: str):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
         if unit:
             if statename == "operation_mode":
-                return templates.TemplateResponse("_statemachine_operation_mode.html", {"request": request, "unit": unit})
+                return templates.TemplateResponse(
+                    "_statemachine_operation_state.html",
+                    {"request": request, "unit": unit},
+                )
             elif statename == "machine_state":
-                return templates.TemplateResponse("_statemachine_machine_state.html", {"request": request, "unit": unit})
+                return templates.TemplateResponse(
+                    "_statemachine_machine_state.html",
+                    {"request": request, "unit": unit},
+                )
+            elif statename == "operating_mode":
+                return templates.TemplateResponse(
+                    "_statemachine_operating_state.html",
+                    {"request": request, "unit": unit},
+                )
             else:
                 return "Invalid statename"
 
     @app.post("/unit/{unit_name}/state_operation_mode/", response_class=HTMLResponse)
-    async def change_state_operation(request: Request, unit_name: str, state_name: str, action: str):
+    async def change_state_operation(
+        request: Request, unit_name: str, state_name: str, action: str
+    ):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
         if unit:
             unit.statemachine_operation_mode.disable_all_states()
@@ -76,15 +114,23 @@ def create_app(simulation: Simulation):
             for state in state_path:
                 await state.curr_state_node.set_writable(True)
                 if action == "deactivate":
-                    await state.curr_state_node.write_value(ua.LocalizedText("Null", "en"))
+                    await state.curr_state_node.write_value(
+                        ua.LocalizedText("Null", "en")
+                    )
                     state.active = False
                 elif action == "activate":
-                    await state.curr_state_node.write_value(ua.LocalizedText(state.name, "en"))
+                    await state.curr_state_node.write_value(
+                        ua.LocalizedText(state.name, "en")
+                    )
                     state.active = True
-        return templates.TemplateResponse("show_unit.html", {"request": request, "unit": unit})
+        return templates.TemplateResponse(
+            "show_unit.html", {"request": request, "unit": unit}
+        )
 
     @app.post("/unit/{unit_name}/state_operating_mode/", response_class=HTMLResponse)
-    async def change_state_operating_mode(request: Request, unit_name: str, state_name: str, action: str):
+    async def change_state_operating_mode(
+        request: Request, unit_name: str, state_name: str, action: str
+    ):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
         if unit:
             unit.statemachine_operating_mode.disable_all_states()
@@ -92,15 +138,23 @@ def create_app(simulation: Simulation):
             for state in state_path:
                 await state.curr_state_node.set_writable(True)
                 if action == "deactivate":
-                    await state.curr_state_node.write_value(ua.LocalizedText("Null", "en"))
+                    await state.curr_state_node.write_value(
+                        ua.LocalizedText("Null", "en")
+                    )
                     state.active = False
                 elif action == "activate":
-                    await state.curr_state_node.write_value(ua.LocalizedText(state.name, "en"))
+                    await state.curr_state_node.write_value(
+                        ua.LocalizedText(state.name, "en")
+                    )
                     state.active = True
-        return templates.TemplateResponse("show_unit.html", {"request": request, "unit": unit})
+        return templates.TemplateResponse(
+            "show_unit.html", {"request": request, "unit": unit}
+        )
 
     @app.post("/unit/{unit_name}/state_machine_state/", response_class=HTMLResponse)
-    async def change_state_machine(request: Request, unit_name: str, state_name: str, action: str):
+    async def change_state_machine(
+        request: Request, unit_name: str, state_name: str, action: str
+    ):
         unit = next((unit for unit in simulation.units if unit.name == unit_name), None)
         if unit:
             unit.statemachine_machine_state.disable_all_states()
@@ -108,24 +162,42 @@ def create_app(simulation: Simulation):
             for state in state_path:
                 await state.curr_state_node.set_writable(True)
                 if action == "deactivate":
-                    await state.curr_state_node.write_value(ua.LocalizedText("Null", "en"))
+                    await state.curr_state_node.write_value(
+                        ua.LocalizedText("Null", "en")
+                    )
                     state.active = False
                 elif action == "activate":
-                    await state.curr_state_node.write_value(ua.LocalizedText(state.name, "en"))
+                    await state.curr_state_node.write_value(
+                        ua.LocalizedText(state.name, "en")
+                    )
                     state.active = True
-        return templates.TemplateResponse("show_unit.html", {"request": request, "unit": unit})
-
+        return templates.TemplateResponse(
+            "show_unit.html", {"request": request, "unit": unit}
+        )
 
     @app.get("/value/{unit_name}/{module_name}", response_class=HTMLResponse)
     async def get_updated_value(request: Request, unit_name: str, module_name: str):
-        unit: Unit | None = next((unit for unit in simulation.units if unit.name == unit_name), None)
+        unit: Unit | None = next(
+            (unit for unit in simulation.units if unit.name == unit_name), None
+        )
         if unit is None:
-            return HTMLResponse(content=f"<h2>Unit {unit_name} not found</h2>", status_code=404)
+            return HTMLResponse(
+                content=f"<h2>Unit {unit_name} not found</h2>", status_code=404
+            )
         module = next((mod for mod in unit.modules if mod.name == module_name), None)
         if module is None:
-            return HTMLResponse(content=f"<h2>Module {module_name} not found in unit {unit_name}</h2>", status_code=404)
+            return HTMLResponse(
+                content=f"<h2>Module {module_name} not found in unit {unit_name}</h2>",
+                status_code=404,
+            )
         raw = module.update_behaviour.state if module.update_behaviour else None
-        value = f"{raw:.2f}" if isinstance(raw, float) else str(raw) if raw is not None else "N/A"
+        value = (
+            f"{raw:.2f}"
+            if isinstance(raw, float)
+            else str(raw)
+            if raw is not None
+            else "N/A"
+        )
         eu_range = module.eu_range
         eu_info = module.eu_info
         unit_symbol = eu_info.DisplayName.Text if eu_info else module.unit
@@ -134,27 +206,39 @@ def create_app(simulation: Simulation):
             span = eu_range.High - eu_range.Low
             if span > 0:
                 pct = max(0.0, min(100.0, (raw - eu_range.Low) / span * 100))
-        return templates.TemplateResponse("module_value.html", {
-            "request": request,
-            "val": value,
-            "unit_symbol": unit_symbol,
-            "eu_range": eu_range,
-            "pct": pct,
-        })
+        return templates.TemplateResponse(
+            "module_value.html",
+            {
+                "request": request,
+                "val": value,
+                "unit_symbol": unit_symbol,
+                "eu_range": eu_range,
+                "pct": pct,
+            },
+        )
 
     @app.get("/show_unit/{unit_name}", response_class=HTMLResponse)
     async def show_unit(request: Request, unit_name: str):
-        unit: Unit | None = next((unit for unit in simulation.units if unit.name == unit_name), None)
+        unit: Unit | None = next(
+            (unit for unit in simulation.units if unit.name == unit_name), None
+        )
         if unit is None:
-            return HTMLResponse(content=f"<h2>Unit {unit_name} not found</h2>", status_code=404)
-        return templates.TemplateResponse("show_unit.html", {"request": request, "unit": unit})
+            return HTMLResponse(
+                content=f"<h2>Unit {unit_name} not found</h2>", status_code=404
+            )
+        return templates.TemplateResponse(
+            "show_unit.html", {"request": request, "unit": unit}
+        )
 
     @app.get("/jobs", response_class=HTMLResponse)
     async def jobs(request: Request):
         units = simulation.units
-        return templates.TemplateResponse("_jobs.html", {"request": request, "units": units})
+        return templates.TemplateResponse(
+            "_jobs.html", {"request": request, "units": units}
+        )
 
     return app
+
 
 async def create_interface(simulation: Simulation):
     app = create_app(simulation)

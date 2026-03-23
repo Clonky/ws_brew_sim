@@ -57,6 +57,6 @@ async def main():
 
 
 if __name__ == "__main__":
-    logging.getLogger("asyncua").setLevel(level=logging.ERROR)
+    logging.getLogger("asyncua").setLevel(level=logging.WARN)
     logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
