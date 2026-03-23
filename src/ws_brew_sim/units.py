@@ -46,6 +46,7 @@ class Unit:
         self.event: Event | None = None
         self._populate_modules()
         self.statemachine_operation_mode: None | StateMachineTree = None
+        self.statemachine_operating_mode: None | StateMachineTree = None
         self.statemachine_machine_state: None | StateMachineTree = None
         self.initial_operation_mode = initial_operation_mode
 
@@ -101,6 +102,11 @@ class Unit:
         )
         if self.initial_operation_mode and self.statemachine_operation_mode:
             self.statemachine_operation_mode.activate_state(self.initial_operation_mode)
+        self.statemachine_operating_mode = (
+            await StateMachineTree.build_tree_operating_mode(
+                self.simulation.server, self.node_id
+            )
+        )
         self.statemachine_machine_state = await MachineState.build_tree_machine_state(
             self.simulation.server, self.node_id
         )

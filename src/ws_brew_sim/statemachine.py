@@ -86,6 +86,34 @@ class StateMachineTree:
         return cls(root)
 
     @classmethod
+    async def build_tree_operating_mode(cls, server: Server, parent_node_id: NodeId):
+        """Build the DIN IEC 60050-351 OperatingMode statemachine (Automatic/SemiAutomatic/Manual).
+
+        Navigates to Monitoring/Status/OperatingMode and uses the type
+        OperatingModeDINIEC60050-351StateMachineType (WSBasis ns=13;i=10012) as src_override
+        to obtain the state nodes that are not present in the instance.
+        """
+        try:
+            machinery_idx = await server.get_namespace_index(
+                "http://opcfoundation.org/UA/Machinery/"
+            )
+            wsbasis_idx = await server.get_namespace_index(
+                "http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/"
+            )
+            parent_node = server.get_node(parent_node_id)
+            operating_mode_node = await parent_node.get_child(
+                [f"{machinery_idx}:Monitoring", f"{machinery_idx}:Status", f"{wsbasis_idx}:OperatingMode"]
+            )
+            type_node_id = NodeId(10012, wsbasis_idx)
+            root = await cls.get_states_and_transitions(
+                server, operating_mode_node.nodeid, src_override=type_node_id
+            )
+        except Exception:
+            logger.warning("OperatingMode (DIN IEC) state machine not found under node %s", parent_node_id)
+            return None
+        return cls(root)
+
+    @classmethod
     async def build_tree_machine_state(cls, server: Server, parent_node_id: NodeId):
         try:
             machinery_idx = await server.get_namespace_index(

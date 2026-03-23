@@ -29,66 +29,18 @@
     </NamespaceUris>
     <Models>
         <Model ModelUri="http://bake.example.com" PublicationDate="2026-03-22T10:10:43+01:00" Version="1.00">
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/"
-                PublicationDate="2023-12-15T00:00:00Z"
-                Version="1.05.03"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/Machinery/ProcessValues/"
-                PublicationDate="2023-05-01T00:00:00Z"
-                Version="1.00.0"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/PADIM/"
-                PublicationDate="2023-10-27T00:00:00Z"
-                Version="1.01.0"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/Machinery/Energy/"
-                PublicationDate="2025-06-01T00:00:00Z"
-                Version="1.00"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/ECM/"
-                PublicationDate="2025-02-01T00:00:00Z"
-                Version="1.0.0"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/IA/"
-                PublicationDate="2024-02-28T00:00:00Z"
-                Version="1.01.2"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/Dictionary/IRDI"
-                PublicationDate="2023-10-27T00:00:00Z"
-                Version="1.01.0"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/DI/"
-                PublicationDate="2022-11-03T00:00:00Z"
-                Version="1.04.0"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/Machinery/"
-                PublicationDate="2025-07-01T00:00:00Z"
-                Version="1.04.0"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/PackML/"
-                PublicationDate="2020-10-08T00:00:00Z"
-                Version="1.01"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/"
-                PublicationDate="2025-07-03T00:00:00Z"
-                Version="0.01.74"
-            />
-            <RequiredModel
-                ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBake/"
-                PublicationDate="2026-02-16T00:00:00Z"
-                Version="0.01.02"
-            />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/" PublicationDate="2023-12-15T00:00:00Z" Version="1.05.03" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/ProcessValues/" PublicationDate="2023-05-01T00:00:00Z" Version="1.00.0" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/PADIM/" PublicationDate="2023-10-27T00:00:00Z" Version="1.01.0" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/Energy/" PublicationDate="2025-06-01T00:00:00Z" Version="1.00" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/ECM/" PublicationDate="2025-02-01T00:00:00Z" Version="1.0.0" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/IA/" PublicationDate="2024-02-28T00:00:00Z" Version="1.01.2" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/Dictionary/IRDI" PublicationDate="2023-10-27T00:00:00Z" Version="1.01.0" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/DI/" PublicationDate="2022-11-03T00:00:00Z" Version="1.04.0" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/Machinery/" PublicationDate="2025-07-01T00:00:00Z" Version="1.04.0" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/PackML/" PublicationDate="2020-10-08T00:00:00Z" Version="1.01" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBasis/" PublicationDate="2025-07-03T00:00:00Z" Version="0.01.74" />
+            <RequiredModel ModelUri="http://opcfoundation.org/UA/WeihenstephanStandards/WSBake/" PublicationDate="2026-02-16T00:00:00Z" Version="0.01.02" />
         </Model>
     </Models>
     <Aliases>
@@ -127,12 +79,7 @@
             <si:GeneratorExtension Hash="64c008ab799b42ff186c1cac97c1b96a" />
         </Extension>
     </Extensions>
-    <UAObject
-        SymbolicName="http___bake_example_com"
-        NodeId="ns=12;i=5000"
-        BrowseName="12:http://bake.example.com"
-        ParentNodeId="i=11715"
-    >
+    <UAObject SymbolicName="http___bake_example_com" NodeId="ns=12;i=5000" BrowseName="12:http://bake.example.com" ParentNodeId="i=11715">
         <DisplayName>http://bake.example.com</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">i=11715</Reference>
@@ -146,12 +93,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="DateTime"
-        NodeId="ns=12;i=6001"
-        BrowseName="NamespacePublicationDate"
-        ParentNodeId="ns=12;i=5000"
-    >
+    <UAVariable DataType="DateTime" NodeId="ns=12;i=6001" BrowseName="NamespacePublicationDate" ParentNodeId="ns=12;i=5000">
         <DisplayName>NamespacePublicationDate</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5000</Reference>
@@ -181,63 +123,35 @@
             <uax:String>1.00</uax:String>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="IdType"
-        ValueRank="1"
-        NodeId="ns=12;i=6004"
-        BrowseName="StaticNodeIdTypes"
-        ParentNodeId="ns=12;i=5000"
-    >
+    <UAVariable DataType="IdType" ValueRank="1" NodeId="ns=12;i=6004" BrowseName="StaticNodeIdTypes" ParentNodeId="ns=12;i=5000">
         <DisplayName>StaticNodeIdTypes</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5000</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NumericRange"
-        ValueRank="1"
-        NodeId="ns=12;i=6005"
-        BrowseName="StaticNumericNodeIdRange"
-        ParentNodeId="ns=12;i=5000"
-    >
+    <UAVariable DataType="NumericRange" ValueRank="1" NodeId="ns=12;i=6005" BrowseName="StaticNumericNodeIdRange" ParentNodeId="ns=12;i=5000">
         <DisplayName>StaticNumericNodeIdRange</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5000</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="String"
-        NodeId="ns=12;i=6006"
-        BrowseName="StaticStringNodeIdPattern"
-        ParentNodeId="ns=12;i=5000"
-    >
+    <UAVariable DataType="String" NodeId="ns=12;i=6006" BrowseName="StaticStringNodeIdPattern" ParentNodeId="ns=12;i=5000">
         <DisplayName>StaticStringNodeIdPattern</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5000</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="i=96"
-        ValueRank="1"
-        NodeId="ns=12;i=6007"
-        BrowseName="DefaultRolePermissions"
-        ParentNodeId="ns=12;i=5000"
-    >
+    <UAVariable DataType="i=96" ValueRank="1" NodeId="ns=12;i=6007" BrowseName="DefaultRolePermissions" ParentNodeId="ns=12;i=5000">
         <DisplayName>DefaultRolePermissions</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5000</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="i=95"
-        NodeId="ns=12;i=6008"
-        BrowseName="DefaultAccessRestrictions"
-        ParentNodeId="ns=12;i=5000"
-    >
+    <UAVariable DataType="i=95" NodeId="ns=12;i=6008" BrowseName="DefaultAccessRestrictions" ParentNodeId="ns=12;i=5000">
         <DisplayName>DefaultAccessRestrictions</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5000</Reference>
@@ -262,8 +176,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5003" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5001">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Unit.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Unit.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5001</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -274,7 +187,7 @@
         <Description>Provides information about the monitoring.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5001</Reference>
-            <Reference ReferenceType="HasTypeDefinition">ns=10;i=10032</Reference>
+            <Reference ReferenceType="HasTypeDefinition">ns=10;i=10017</Reference>
         </References>
     </UAObject>
     <UAObject NodeId="ns=12;i=5005" BrowseName="7:OperationCounters" ParentNodeId="ns=12;i=5001">
@@ -297,8 +210,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5007" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5002">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Unit.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Unit.</Description>
         <References>
             <Reference ReferenceType="HasAddIn" IsForward="false">ns=12;i=5002</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -418,8 +330,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5019" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5010">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5010</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -427,8 +338,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5020" BrowseName="8:OperationMode" ParentNodeId="ns=12;i=5010">
         <DisplayName>OperationMode</DisplayName>
-        <Description
-        >The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
+        <Description>The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5010</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1008</Reference>
@@ -564,8 +474,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5035" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5015">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5015</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -573,8 +482,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5036" BrowseName="8:OperationMode" ParentNodeId="ns=12;i=5015">
         <DisplayName>OperationMode</DisplayName>
-        <Description
-        >The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
+        <Description>The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5015</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1008</Reference>
@@ -737,8 +645,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5053" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5021">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5021</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -746,8 +653,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5054" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5021">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5021</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -771,8 +677,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5056" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5021">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5021</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -780,8 +685,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5057" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5021">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5021</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -887,26 +791,14 @@
             <Reference ReferenceType="ToState">ns=10;i=50054</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6018"
-        BrowseName="AvailableStates"
-        ParentNodeId="ns=12;i=5024"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6018" BrowseName="AvailableStates" ParentNodeId="ns=12;i=5024">
         <DisplayName>AvailableStates</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5024</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6019"
-        BrowseName="AvailableTransitions"
-        ParentNodeId="ns=12;i=5024"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6019" BrowseName="AvailableTransitions" ParentNodeId="ns=12;i=5024">
         <DisplayName>AvailableTransitions</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5024</Reference>
@@ -1104,8 +996,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5086" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5037">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5037</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1113,8 +1004,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5087" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5037">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5037</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1138,8 +1028,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5089" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5037">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5037</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1147,8 +1036,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5090" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5037">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5037</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1254,26 +1142,14 @@
             <Reference ReferenceType="ToState">ns=10;i=50054</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6027"
-        BrowseName="AvailableStates"
-        ParentNodeId="ns=12;i=5040"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6027" BrowseName="AvailableStates" ParentNodeId="ns=12;i=5040">
         <DisplayName>AvailableStates</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5040</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6028"
-        BrowseName="AvailableTransitions"
-        ParentNodeId="ns=12;i=5040"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6028" BrowseName="AvailableTransitions" ParentNodeId="ns=12;i=5040">
         <DisplayName>AvailableTransitions</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5040</Reference>
@@ -1378,8 +1254,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5107" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5048">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5048</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1387,8 +1262,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5108" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5048">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5048</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1412,8 +1286,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5110" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5048">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5048</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1421,8 +1294,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5111" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5048">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5048</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1585,8 +1457,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5126" BrowseName="10:Changeover" ParentNodeId="ns=12;i=5052">
         <DisplayName>Changeover</DisplayName>
-        <Description
-        >The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
+        <Description>The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5052</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1858,26 +1729,14 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6055"
-        BrowseName="AvailableStates"
-        ParentNodeId="ns=12;i=5067"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6055" BrowseName="AvailableStates" ParentNodeId="ns=12;i=5067">
         <DisplayName>AvailableStates</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5067</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6056"
-        BrowseName="AvailableTransitions"
-        ParentNodeId="ns=12;i=5067"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6056" BrowseName="AvailableTransitions" ParentNodeId="ns=12;i=5067">
         <DisplayName>AvailableTransitions</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5067</Reference>
@@ -1935,8 +1794,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5143" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5073">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5073</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -1944,8 +1802,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5144" BrowseName="8:OperationMode" ParentNodeId="ns=12;i=5073">
         <DisplayName>OperationMode</DisplayName>
-        <Description
-        >The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
+        <Description>The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5073</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1008</Reference>
@@ -1990,8 +1847,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5145" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5081">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5081</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -1999,8 +1855,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5146" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5081">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5081</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -2024,8 +1879,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5148" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5081">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5081</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -2033,8 +1887,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5149" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5081">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5081</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -2197,8 +2050,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5164" BrowseName="10:Changeover" ParentNodeId="ns=12;i=5085">
         <DisplayName>Changeover</DisplayName>
-        <Description
-        >The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
+        <Description>The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5085</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -2470,26 +2322,14 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6084"
-        BrowseName="AvailableStates"
-        ParentNodeId="ns=12;i=5100"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6084" BrowseName="AvailableStates" ParentNodeId="ns=12;i=5100">
         <DisplayName>AvailableStates</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5100</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6085"
-        BrowseName="AvailableTransitions"
-        ParentNodeId="ns=12;i=5100"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6085" BrowseName="AvailableTransitions" ParentNodeId="ns=12;i=5100">
         <DisplayName>AvailableTransitions</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5100</Reference>
@@ -2547,8 +2387,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5181" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5106">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5106</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -2556,8 +2395,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5182" BrowseName="8:OperationMode" ParentNodeId="ns=12;i=5106">
         <DisplayName>OperationMode</DisplayName>
-        <Description
-        >The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
+        <Description>The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5106</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1008</Reference>
@@ -2901,26 +2739,14 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6122"
-        BrowseName="AvailableStates"
-        ParentNodeId="ns=12;i=5138"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6122" BrowseName="AvailableStates" ParentNodeId="ns=12;i=5138">
         <DisplayName>AvailableStates</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5138</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6123"
-        BrowseName="AvailableTransitions"
-        ParentNodeId="ns=12;i=5138"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6123" BrowseName="AvailableTransitions" ParentNodeId="ns=12;i=5138">
         <DisplayName>AvailableTransitions</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5138</Reference>
@@ -2946,8 +2772,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5184" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5141">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5141</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -2955,8 +2780,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5185" BrowseName="8:OperationMode" ParentNodeId="ns=12;i=5141">
         <DisplayName>OperationMode</DisplayName>
-        <Description
-        >The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
+        <Description>The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5141</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1008</Reference>
@@ -3027,12 +2851,7 @@
             <Reference ReferenceType="HasTypeDefinition">ns=10;i=10010</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="EUInformation"
-        NodeId="ns=12;i=6127"
-        BrowseName="EngineeringUnits"
-        ParentNodeId="ns=12;i=6058"
-    >
+    <UAVariable DataType="EUInformation" NodeId="ns=12;i=6127" BrowseName="EngineeringUnits" ParentNodeId="ns=12;i=6058">
         <DisplayName>EngineeringUnits</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6058</Reference>
@@ -3046,12 +2865,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="EUInformation"
-        NodeId="ns=12;i=6129"
-        BrowseName="EngineeringUnits"
-        ParentNodeId="ns=12;i=6059"
-    >
+    <UAVariable DataType="EUInformation" NodeId="ns=12;i=6129" BrowseName="EngineeringUnits" ParentNodeId="ns=12;i=6059">
         <DisplayName>EngineeringUnits</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6059</Reference>
@@ -3403,26 +3217,14 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6166"
-        BrowseName="AvailableStates"
-        ParentNodeId="ns=12;i=5176"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6166" BrowseName="AvailableStates" ParentNodeId="ns=12;i=5176">
         <DisplayName>AvailableStates</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5176</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=63</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="NodeId"
-        ValueRank="1"
-        NodeId="ns=12;i=6167"
-        BrowseName="AvailableTransitions"
-        ParentNodeId="ns=12;i=5176"
-    >
+    <UAVariable DataType="NodeId" ValueRank="1" NodeId="ns=12;i=6167" BrowseName="AvailableTransitions" ParentNodeId="ns=12;i=5176">
         <DisplayName>AvailableTransitions</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5176</Reference>
@@ -3448,8 +3250,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5193" BrowseName="8:MachineryItemState" ParentNodeId="ns=12;i=5179">
         <DisplayName>MachineryItemState</DisplayName>
-        <Description
-        >The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
+        <Description>The MachineryItemState state machine provides information about the status of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5179</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1002</Reference>
@@ -3457,8 +3258,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5194" BrowseName="8:OperationMode" ParentNodeId="ns=12;i=5179">
         <DisplayName>OperationMode</DisplayName>
-        <Description
-        >The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
+        <Description>The state machine OperationMode provides information about the operating mode of a WS Machine.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5179</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=8;i=1008</Reference>
@@ -3624,8 +3424,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5207" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5187">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5187</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -3633,8 +3432,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5208" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5187">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5187</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -3658,8 +3456,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5210" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5187">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5187</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -3667,8 +3464,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5211" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5187">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5187</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -3831,8 +3627,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5226" BrowseName="10:Changeover" ParentNodeId="ns=12;i=5191">
         <DisplayName>Changeover</DisplayName>
-        <Description
-        >The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
+        <Description>The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5191</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4048,8 +3843,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5244" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5196">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5196</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4057,8 +3851,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5245" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5196">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5196</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4082,8 +3875,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5247" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5196">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5196</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4091,8 +3883,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5248" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5196">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5196</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4255,8 +4046,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5263" BrowseName="10:Changeover" ParentNodeId="ns=12;i=5200">
         <DisplayName>Changeover</DisplayName>
-        <Description
-        >The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
+        <Description>The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5200</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4400,8 +4190,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5275" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5202">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5202</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4409,8 +4198,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5276" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5202">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5202</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4434,8 +4222,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5278" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5202">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5202</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4443,8 +4230,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5279" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5202">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5202</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -4607,8 +4393,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5294" BrowseName="10:Changeover" ParentNodeId="ns=12;i=5206">
         <DisplayName>Changeover</DisplayName>
-        <Description
-        >The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
+        <Description>The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5206</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -5101,8 +4886,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5306" BrowseName="10:Cleaned" ParentNodeId="ns=12;i=5239">
         <DisplayName>Cleaned</DisplayName>
-        <Description
-        >The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
+        <Description>The asset just finished the cleaning procedure. This state is valid for a maximum time, before this state changes to “Cleaned Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5239</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -5110,8 +4894,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5307" BrowseName="10:CleanedExpired" ParentNodeId="ns=12;i=5239">
         <DisplayName>CleanedExpired</DisplayName>
-        <Description
-        >The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Cleaned” state too long and must be rinsed or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5239</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -5135,8 +4918,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5309" BrowseName="10:Sterile" ParentNodeId="ns=12;i=5239">
         <DisplayName>Sterile</DisplayName>
-        <Description
-        >The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
+        <Description>The asset just finished the Sterilization procedure. This state is valid for a maximum time, before this state changes to “Sterile Expired”.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5239</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -5144,8 +4926,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5310" BrowseName="10:SterileExpired" ParentNodeId="ns=12;i=5239">
         <DisplayName>SterileExpired</DisplayName>
-        <Description
-        >The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
+        <Description>The asset remained in the “Sterile” state too long and must be sterilized or cleaned again before reuse.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5239</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -5308,8 +5089,7 @@
     </UAVariable>
     <UAObject NodeId="ns=12;i=5325" BrowseName="10:Changeover" ParentNodeId="ns=12;i=5243">
         <DisplayName>Changeover</DisplayName>
-        <Description
-        >The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
+        <Description>The machine / unit is running the changeover program in which automatic machine adjustments are made depending on specific parameters.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5243</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=2307</Reference>
@@ -6466,56 +6246,28 @@
             <Reference ReferenceType="HasTypeDefinition">ns=10;i=10047</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="String"
-        NodeId="ns=12;i=6349"
-        BrowseName="4:ApplicationTag"
-        ParentNodeId="ns=12;i=5046"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="String" NodeId="ns=12;i=6349" BrowseName="4:ApplicationTag" ParentNodeId="ns=12;i=5046" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>ApplicationTag</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5046</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="Float"
-        NodeId="ns=12;i=6350"
-        BrowseName="4:AcActiveEnergyTotalExportLp"
-        ParentNodeId="ns=12;i=5046"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Float" NodeId="ns=12;i=6350" BrowseName="4:AcActiveEnergyTotalExportLp" ParentNodeId="ns=12;i=5046" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AcActiveEnergyTotalExportLp</DisplayName>
         <References>
             <Reference ReferenceType="HasStatisticComponent" IsForward="false">ns=12;i=5046</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=4;i=2002</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="Float"
-        NodeId="ns=12;i=6351"
-        BrowseName="4:AcActiveEnergyTotalImportLp"
-        ParentNodeId="ns=12;i=5046"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Float" NodeId="ns=12;i=6351" BrowseName="4:AcActiveEnergyTotalImportLp" ParentNodeId="ns=12;i=5046" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AcActiveEnergyTotalImportLp</DisplayName>
         <References>
             <Reference ReferenceType="HasStatisticComponent" IsForward="false">ns=12;i=5046</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=4;i=2002</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="Float"
-        NodeId="ns=12;i=6352"
-        BrowseName="4:AcActivePowerTotal"
-        ParentNodeId="ns=12;i=5046"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Float" NodeId="ns=12;i=6352" BrowseName="4:AcActivePowerTotal" ParentNodeId="ns=12;i=5046" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AcActivePowerTotal</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5046</Reference>
@@ -6588,56 +6340,28 @@
             <Reference ReferenceType="HasTypeDefinition">ns=10;i=10046</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="String"
-        NodeId="ns=12;i=6357"
-        BrowseName="4:ApplicationTag"
-        ParentNodeId="ns=12;i=5079"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="String" NodeId="ns=12;i=6357" BrowseName="4:ApplicationTag" ParentNodeId="ns=12;i=5079" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>ApplicationTag</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5079</Reference>
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="Float"
-        NodeId="ns=12;i=6358"
-        BrowseName="4:AcActiveEnergyTotalExportLp"
-        ParentNodeId="ns=12;i=5079"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Float" NodeId="ns=12;i=6358" BrowseName="4:AcActiveEnergyTotalExportLp" ParentNodeId="ns=12;i=5079" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AcActiveEnergyTotalExportLp</DisplayName>
         <References>
             <Reference ReferenceType="HasStatisticComponent" IsForward="false">ns=12;i=5079</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=4;i=2002</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="Float"
-        NodeId="ns=12;i=6359"
-        BrowseName="4:AcActiveEnergyTotalImportLp"
-        ParentNodeId="ns=12;i=5079"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Float" NodeId="ns=12;i=6359" BrowseName="4:AcActiveEnergyTotalImportLp" ParentNodeId="ns=12;i=5079" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AcActiveEnergyTotalImportLp</DisplayName>
         <References>
             <Reference ReferenceType="HasStatisticComponent" IsForward="false">ns=12;i=5079</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=4;i=2002</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="Float"
-        NodeId="ns=12;i=6360"
-        BrowseName="4:AcActivePowerTotal"
-        ParentNodeId="ns=12;i=5079"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Float" NodeId="ns=12;i=6360" BrowseName="4:AcActivePowerTotal" ParentNodeId="ns=12;i=5079" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AcActivePowerTotal</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5079</Reference>
@@ -6658,14 +6382,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="UInt32"
-        NodeId="ns=12;i=6363"
-        BrowseName="4:Resource"
-        ParentNodeId="ns=12;i=6350"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="UInt32" NodeId="ns=12;i=6363" BrowseName="4:Resource" ParentNodeId="ns=12;i=6350" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Resource</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=6350</Reference>
@@ -6689,14 +6406,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="UInt32"
-        NodeId="ns=12;i=6366"
-        BrowseName="4:Resource"
-        ParentNodeId="ns=12;i=6351"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="UInt32" NodeId="ns=12;i=6366" BrowseName="4:Resource" ParentNodeId="ns=12;i=6351" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Resource</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=6351</Reference>
@@ -6720,14 +6430,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="UInt32"
-        NodeId="ns=12;i=6369"
-        BrowseName="4:Resource"
-        ParentNodeId="ns=12;i=6352"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="UInt32" NodeId="ns=12;i=6369" BrowseName="4:Resource" ParentNodeId="ns=12;i=6352" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Resource</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=6352</Reference>
@@ -6861,14 +6564,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="UInt32"
-        NodeId="ns=12;i=6382"
-        BrowseName="4:Resource"
-        ParentNodeId="ns=12;i=6358"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="UInt32" NodeId="ns=12;i=6382" BrowseName="4:Resource" ParentNodeId="ns=12;i=6358" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Resource</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=6358</Reference>
@@ -6892,14 +6588,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="UInt32"
-        NodeId="ns=12;i=6385"
-        BrowseName="4:Resource"
-        ParentNodeId="ns=12;i=6359"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="UInt32" NodeId="ns=12;i=6385" BrowseName="4:Resource" ParentNodeId="ns=12;i=6359" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Resource</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=6359</Reference>
@@ -6923,14 +6612,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="UInt32"
-        NodeId="ns=12;i=6388"
-        BrowseName="4:Resource"
-        ParentNodeId="ns=12;i=6360"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="UInt32" NodeId="ns=12;i=6388" BrowseName="4:Resource" ParentNodeId="ns=12;i=6360" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Resource</DisplayName>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=6360</Reference>
@@ -6958,13 +6640,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6391"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6361"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6391" BrowseName="EnumValues" ParentNodeId="ns=12;i=6361">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6361</Reference>
@@ -6983,13 +6659,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6393"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6363"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6393" BrowseName="EnumValues" ParentNodeId="ns=12;i=6363">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6363</Reference>
@@ -7334,13 +7004,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6395"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6364"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6395" BrowseName="EnumValues" ParentNodeId="ns=12;i=6364">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6364</Reference>
@@ -7359,13 +7023,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6397"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6366"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6397" BrowseName="EnumValues" ParentNodeId="ns=12;i=6366">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6366</Reference>
@@ -7710,13 +7368,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6399"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6367"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6399" BrowseName="EnumValues" ParentNodeId="ns=12;i=6367">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6367</Reference>
@@ -7735,13 +7387,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6401"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6369"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6401" BrowseName="EnumValues" ParentNodeId="ns=12;i=6369">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6369</Reference>
@@ -8138,13 +7784,7 @@
             <Reference ReferenceType="HasTypeDefinition">i=68</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6409"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6380"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6409" BrowseName="EnumValues" ParentNodeId="ns=12;i=6380">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6380</Reference>
@@ -8163,13 +7803,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6411"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6382"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6411" BrowseName="EnumValues" ParentNodeId="ns=12;i=6382">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6382</Reference>
@@ -8514,13 +8148,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6413"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6383"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6413" BrowseName="EnumValues" ParentNodeId="ns=12;i=6383">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6383</Reference>
@@ -8539,13 +8167,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6415"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6385"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6415" BrowseName="EnumValues" ParentNodeId="ns=12;i=6385">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6385</Reference>
@@ -8890,13 +8512,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6417"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6386"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6417" BrowseName="EnumValues" ParentNodeId="ns=12;i=6386">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6386</Reference>
@@ -8915,13 +8531,7 @@
             </uax:LocalizedText>
         </Value>
     </UAVariable>
-    <UAVariable
-        DataType="EnumValueType"
-        ValueRank="1"
-        NodeId="ns=12;i=6419"
-        BrowseName="EnumValues"
-        ParentNodeId="ns=12;i=6388"
-    >
+    <UAVariable DataType="EnumValueType" ValueRank="1" NodeId="ns=12;i=6419" BrowseName="EnumValues" ParentNodeId="ns=12;i=6388">
         <DisplayName>EnumValues</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6388</Reference>
@@ -9367,8 +8977,7 @@
     </UAObject>
     <UAObject NodeId="ns=12;i=5357" BrowseName="10:Motor0" ParentNodeId="ns=12;i=5347">
         <DisplayName>Motor0</DisplayName>
-        <Description
-        >The instances of the mandatory placeholder of type WSMotorType are used to represent one or more motors for the applicator.</Description>
+        <Description>The instances of the mandatory placeholder of type WSMotorType are used to represent one or more motors for the applicator.</Description>
         <References>
             <Reference ReferenceType="HasComponent" IsForward="false">ns=12;i=5347</Reference>
             <Reference ReferenceType="HasTypeDefinition">ns=10;i=10050</Reference>
@@ -9544,15 +9153,7 @@
             <Reference ReferenceType="HasTypeDefinition">ns=1;i=1003</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="Number"
-        ValueRank="-2"
-        NodeId="ns=12;i=6423"
-        BrowseName="2:AnalogSignal"
-        ParentNodeId="ns=12;i=5378"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Number" ValueRank="-2" NodeId="ns=12;i=6423" BrowseName="2:AnalogSignal" ParentNodeId="ns=12;i=5378" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AnalogSignal</DisplayName>
         <Description>The process value.</Description>
         <References>
@@ -9560,14 +9161,7 @@
             <Reference ReferenceType="HasTypeDefinition">ns=2;i=1111</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="String"
-        NodeId="ns=12;i=6424"
-        BrowseName="2:SignalTag"
-        ParentNodeId="ns=12;i=5378"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="String" NodeId="ns=12;i=6424" BrowseName="2:SignalTag" ParentNodeId="ns=12;i=5378" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Tag</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5378</Reference>
@@ -9575,12 +9169,7 @@
             <Reference ReferenceType="HasDictionaryEntry">ns=6;s=0112/2///61987#ABB271#008</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="EUInformation"
-        NodeId="ns=12;i=6425"
-        BrowseName="EngineeringUnits"
-        ParentNodeId="ns=12;i=6423"
-    >
+    <UAVariable DataType="EUInformation" NodeId="ns=12;i=6425" BrowseName="EngineeringUnits" ParentNodeId="ns=12;i=6423">
         <DisplayName>EngineeringUnits</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6423</Reference>
@@ -9602,15 +9191,7 @@
             <Reference ReferenceType="HasTypeDefinition">ns=1;i=1003</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="Number"
-        ValueRank="-2"
-        NodeId="ns=12;i=6427"
-        BrowseName="2:AnalogSignal"
-        ParentNodeId="ns=12;i=5379"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Number" ValueRank="-2" NodeId="ns=12;i=6427" BrowseName="2:AnalogSignal" ParentNodeId="ns=12;i=5379" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AnalogSignal</DisplayName>
         <Description>The process value.</Description>
         <References>
@@ -9618,14 +9199,7 @@
             <Reference ReferenceType="HasTypeDefinition">ns=2;i=1111</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="String"
-        NodeId="ns=12;i=6428"
-        BrowseName="2:SignalTag"
-        ParentNodeId="ns=12;i=5379"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="String" NodeId="ns=12;i=6428" BrowseName="2:SignalTag" ParentNodeId="ns=12;i=5379" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Tag</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5379</Reference>
@@ -9633,12 +9207,7 @@
             <Reference ReferenceType="HasDictionaryEntry">ns=6;s=0112/2///61987#ABB271#008</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="EUInformation"
-        NodeId="ns=12;i=6429"
-        BrowseName="EngineeringUnits"
-        ParentNodeId="ns=12;i=6427"
-    >
+    <UAVariable DataType="EUInformation" NodeId="ns=12;i=6429" BrowseName="EngineeringUnits" ParentNodeId="ns=12;i=6427">
         <DisplayName>EngineeringUnits</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6427</Reference>
@@ -9660,15 +9229,7 @@
             <Reference ReferenceType="HasTypeDefinition">ns=1;i=1003</Reference>
         </References>
     </UAObject>
-    <UAVariable
-        DataType="Number"
-        ValueRank="-2"
-        NodeId="ns=12;i=6431"
-        BrowseName="2:AnalogSignal"
-        ParentNodeId="ns=12;i=5380"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="Number" ValueRank="-2" NodeId="ns=12;i=6431" BrowseName="2:AnalogSignal" ParentNodeId="ns=12;i=5380" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>AnalogSignal</DisplayName>
         <Description>The process value.</Description>
         <References>
@@ -9676,14 +9237,7 @@
             <Reference ReferenceType="HasTypeDefinition">ns=2;i=1111</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="String"
-        NodeId="ns=12;i=6432"
-        BrowseName="2:SignalTag"
-        ParentNodeId="ns=12;i=5380"
-        UserAccessLevel="3"
-        AccessLevel="3"
-    >
+    <UAVariable DataType="String" NodeId="ns=12;i=6432" BrowseName="2:SignalTag" ParentNodeId="ns=12;i=5380" UserAccessLevel="3" AccessLevel="3">
         <DisplayName>Tag</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=5380</Reference>
@@ -9691,12 +9245,7 @@
             <Reference ReferenceType="HasDictionaryEntry">ns=6;s=0112/2///61987#ABB271#008</Reference>
         </References>
     </UAVariable>
-    <UAVariable
-        DataType="EUInformation"
-        NodeId="ns=12;i=6433"
-        BrowseName="EngineeringUnits"
-        ParentNodeId="ns=12;i=6431"
-    >
+    <UAVariable DataType="EUInformation" NodeId="ns=12;i=6433" BrowseName="EngineeringUnits" ParentNodeId="ns=12;i=6431">
         <DisplayName>EngineeringUnits</DisplayName>
         <References>
             <Reference ReferenceType="HasProperty" IsForward="false">ns=12;i=6431</Reference>
