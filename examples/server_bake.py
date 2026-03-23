@@ -13,7 +13,6 @@ from ws_brew_sim.units import (
 
 
 async def setup(server: asyncua.Server):
-
     simulation = Simulation(server)
 
     units = [
@@ -44,7 +43,9 @@ async def main():
 
     for xml in get_xmls():
         logging.info(f"Importing {xml}...")
-        await server.import_xml(f"xmls/{xml}")
+        await server.import_xml(
+            f"xmls/{xml}", strict_mode=False, auto_load_definitions=False
+        )
     logging.info("Finished loading specifications")
 
     await setup(server)

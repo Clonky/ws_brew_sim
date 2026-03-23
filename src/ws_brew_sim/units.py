@@ -118,7 +118,11 @@ class Unit:
             await self._setup_evgen(server)
             if "TransferEvent" in self.evgen:
                 event = await TransferEvent.from_nodes(
-                    self.node, self.node, "batch_001", self.evgen["TransferEvent"], server
+                    self.node,
+                    self.node,
+                    "batch_001",
+                    self.evgen["TransferEvent"],
+                    server,
                 )
                 self.curr_event = event
 
@@ -345,15 +349,25 @@ class TunnelOvenExample(Unit):
         # AnalogSignal nodes have DataType=Number (abstract); write as Double.
         # ProcessValueSetpoint nodes have DataType=Float; write as Float.
         modules = [
-            Temperature(ua.NodeId(6431, 15), 200.0, 2.0, low=0.0, high=300.0),   # TemperatureProductCore
-            Pressure(ua.NodeId(6423, 15), 0.02, 0.005, low=-0.5, high=0.5),      # PressureChimneyFlueGas
-            Pressure(ua.NodeId(6427, 15), 0.015, 0.005, low=-0.5, high=0.5),     # PressureChimneyFlueSteam
-            Pressure(ua.NodeId(6058, 15), 25.0, 0.1, low=0.0, high=100.0),       # EccentricSetpoint
-            Pressure(ua.NodeId(6059, 15), 1.0, 0.01, low=0.0, high=10.0),        # PressureSetpoint
+            Temperature(
+                ua.NodeId(6431, 15), 200.0, 2.0, low=0.0, high=300.0
+            ),  # TemperatureProductCore
+            Pressure(
+                ua.NodeId(6423, 15), 0.02, 0.005, low=-0.5, high=0.5
+            ),  # PressureChimneyFlueGas
+            Pressure(
+                ua.NodeId(6427, 15), 0.015, 0.005, low=-0.5, high=0.5
+            ),  # PressureChimneyFlueSteam
+            Pressure(
+                ua.NodeId(6058, 15), 25.0, 0.1, low=0.0, high=100.0
+            ),  # EccentricSetpoint
+            Pressure(
+                ua.NodeId(6059, 15), 1.0, 0.01, low=0.0, high=10.0
+            ),  # PressureSetpoint
         ]
-        for m in modules[:3]:   # AnalogSignal nodes → Double
+        for m in modules[:3]:  # AnalogSignal nodes → Double
             m.variant_type = ua.VariantType.Double
-        for m in modules[3:]:   # ProcessValueSetpoint nodes → Float
+        for m in modules[3:]:  # ProcessValueSetpoint nodes → Float
             m.variant_type = ua.VariantType.Float
         super().__init__(
             "TunnelOven",
@@ -362,6 +376,22 @@ class TunnelOvenExample(Unit):
             modules=modules,
             initial_operation_mode="Sterile",
         )
+
+    async def connect(self, server: Server):
+        nsidx = await server.get_namespace_index("http://bake.example.com")
+        self.node_id = ua.NodeId(5001, nsidx)
+        self.modules = [
+            Temperature(
+                ua.NodeId(6431, nsidx), 200.0, 2.0, low=0.0, high=300.0
+            ),  # TemperatureProductCore
+            Pressure(
+                ua.NodeId(6423, nsidx), 0.02, 0.005, low=-0.5, high=0.5
+            ),  # PressureChimneyFlueGas
+            Pressure(
+                ua.NodeId(6427, nsidx), 0.015, 0.005, low=-0.5, high=0.5
+            ),  # PressureChimneyFlueSteam
+        ]
+        await super().connect(server)
 
     async def run(self):
         for module in self.modules:
