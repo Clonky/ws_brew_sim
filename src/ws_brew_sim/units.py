@@ -12,7 +12,7 @@ from asyncua.server.event_generator import EventGenerator
 
 from .events import Event, TransferEvent, UnitProcedureEvent
 from .jobs import FilterJob, JobState, TransferJob
-from .modules import Module, Pressure, Temperature, Timer, Turbidity, Volume
+from .modules import Module, OperationDuration, PowerOnDuration, Pressure, Temperature, Timer, Turbidity, Volume
 from .statemachine import MachineState, StateMachineTree
 
 if TYPE_CHECKING:
@@ -344,17 +344,25 @@ class TunnelOvenExample(Unit):
       ns=15 → http://bake.example.com  (114_tunnel_oven.NodeSet2.xml instances)
 
     Sensors:
-      - TemperatureProductCore   ns=15;i=6431
-      - PressureChimneyFlueGas   ns=15;i=6423
-      - PressureChimneyFlueSteam ns=15;i=6427
-      - EccentricSetpoint        ns=15;i=6058  (stable setpoint ~25 Hz)
-      - PressureSetpoint         ns=15;i=6059  (stable setpoint ~1.0 bar)
+      - TemperatureProductCore   ns=15;i=6262
+      - PressureChimneyFlueGas   ns=15;i=6252
+      - PressureChimneyFlueSteam ns=15;i=6256
+
+    Counters (OPC UA Duration = Double, milliseconds):
+      - OperationDuration        ns=15;i=6157  (Monitoring/Status, increments while Executing)
+      - PowerOnDuration          ns=15;i=6158  (Monitoring/Status, always increments)
+      - OperationDuration        ns=15;i=6163  (Monitoring/Consumption, increments while Executing)
+      - PowerOnDuration          ns=15;i=6164  (Monitoring/Consumption, always increments)
     """
 
     ID_TUNNEL_OVEN = 5001
     ID_TEMP_PRODUCT_CORE = 6262
     ID_PRESSURE_FLUE_GAS = 6252
     ID_PRESSURE_CHIMNEY = 6256
+    ID_OPERATION_DURATION = 6157
+    ID_POWER_ON_DURATION = 6158
+    ID_OPERATION_DURATION_2 = 6163
+    ID_POWER_ON_DURATION_2 = 6164
 
     def __init__(self, simulation: Simulation):
         # Placeholder node IDs (ns=15) are replaced with correct indices in connect().
@@ -392,6 +400,16 @@ class TunnelOvenExample(Unit):
     async def connect(self, server: Server):
         nsidx = await server.get_namespace_index("http://bake.example.com")
         self.node_id = ua.NodeId(self.ID_TUNNEL_OVEN, nsidx)
+        op_dur = OperationDuration(ua.NodeId(self.ID_OPERATION_DURATION, nsidx))
+        op_dur2 = OperationDuration(ua.NodeId(self.ID_OPERATION_DURATION_2, nsidx))
+        op_dur.set_condition(
+            lambda: self.statemachine_machine_state is not None
+            and self.statemachine_machine_state.is_executing()
+        )
+        op_dur2.set_condition(
+            lambda: self.statemachine_machine_state is not None
+            and self.statemachine_machine_state.is_executing()
+        )
         self.modules = [
             Temperature(
                 ua.NodeId(self.ID_TEMP_PRODUCT_CORE, nsidx),
@@ -414,6 +432,10 @@ class TunnelOvenExample(Unit):
                 low=-0.5,
                 high=0.5,
             ),  # PressureChimneyFlueSteam
+            op_dur,
+            PowerOnDuration(ua.NodeId(self.ID_POWER_ON_DURATION, nsidx)),
+            op_dur2,
+            PowerOnDuration(ua.NodeId(self.ID_POWER_ON_DURATION_2, nsidx)),
         ]
         for m in self.modules:
             m.variant_type = ua.VariantType.Double

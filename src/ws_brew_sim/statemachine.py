@@ -320,5 +320,11 @@ class MachineState(StateMachineTree):
             for state in states:
                 state.active = True
 
+    def is_executing(self) -> bool:
+        states = self.get_path_to_state("Executing")
+        if not states:
+            return False
+        return states[-1].active
+
     def set_default(self):
         self.stop_production()

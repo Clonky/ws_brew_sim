@@ -1,5 +1,5 @@
 from __future__ import annotations
-from ws_brew_sim.behaviours import DurationTimer
+from ws_brew_sim.behaviours import ConditionalDurationTimer, DurationTimer
 from ws_brew_sim.behaviours import NormalDistBehaviour
 from typing import TYPE_CHECKING
 from .behaviours import StaticBehaviour
@@ -159,3 +159,22 @@ class Timer(Module):
 
     def __init__(self, nodeid, name):
         super().__init__(name, nodeid, DurationTimer(0.0), "s")
+
+
+class PowerOnDuration(Module):
+    """Increments unconditionally while the server is running (OPC UA Duration, ms)."""
+
+    def __init__(self, nodeid):
+        super().__init__("PowerOnDuration", nodeid, ConditionalDurationTimer(0.0, condition=lambda: True), "ms")
+        self.variant_type = ua.VariantType.Double
+
+
+class OperationDuration(Module):
+    """Increments only while the unit is in executing/production state (OPC UA Duration, ms)."""
+
+    def __init__(self, nodeid):
+        super().__init__("OperationDuration", nodeid, ConditionalDurationTimer(0.0), "ms")
+        self.variant_type = ua.VariantType.Double
+
+    def set_condition(self, fn):
+        self.update_behaviour.condition = fn
