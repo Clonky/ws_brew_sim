@@ -12,7 +12,7 @@ from asyncua.server.event_generator import EventGenerator
 
 from .events import Event, TransferEvent, UnitProcedureEvent
 from .jobs import FilterJob, JobState, TransferJob
-from .modules import Module, OperationDuration, PowerOnDuration, Pressure, Temperature, Timer, Turbidity, Volume
+from .modules import Module, MachineDesignSpeed, OperationDuration, PowerOnDuration, Pressure, ProductCounter, Temperature, Timer, Turbidity, Volume
 from .statemachine import MachineState, StateMachineTree
 
 if TYPE_CHECKING:
@@ -353,6 +353,11 @@ class TunnelOvenExample(Unit):
       - PowerOnDuration          ns=15;i=6158  (Monitoring/Status, always increments)
       - OperationDuration        ns=15;i=6163  (Monitoring/Consumption, increments while Executing)
       - PowerOnDuration          ns=15;i=6164  (Monitoring/Consumption, always increments)
+
+    Production (OPC UA Number = Double):
+      - MachineDesignSpeed       ns=15;i=6250  (static, 2.0 products/s)
+      - GoodProducts             ns=15;i=6241  (increments while Executing)
+      - ScrapProducts            ns=15;i=6260  (increments rarely while Executing, ~2% of output)
     """
 
     ID_TUNNEL_OVEN = 5001
@@ -363,6 +368,9 @@ class TunnelOvenExample(Unit):
     ID_POWER_ON_DURATION = 6158
     ID_OPERATION_DURATION_2 = 6163
     ID_POWER_ON_DURATION_2 = 6164
+    ID_MACHINE_DESIGN_SPEED = 6250
+    ID_GOOD_PRODUCTS = 6241
+    ID_SCRAP_PRODUCTS = 6260
 
     def __init__(self, simulation: Simulation):
         # Placeholder node IDs (ns=15) are replaced with correct indices in connect().
@@ -410,6 +418,17 @@ class TunnelOvenExample(Unit):
             lambda: self.statemachine_machine_state is not None
             and self.statemachine_machine_state.is_executing()
         )
+        DESIGN_SPEED = 2.0  # products/second
+        product_counter = ProductCounter(
+            ua.NodeId(self.ID_GOOD_PRODUCTS, nsidx),
+            ua.NodeId(self.ID_SCRAP_PRODUCTS, nsidx),
+            design_speed=DESIGN_SPEED,
+            scrap_rate=0.02,
+        )
+        product_counter.set_condition(
+            lambda: self.statemachine_machine_state is not None
+            and self.statemachine_machine_state.is_executing()
+        )
         self.modules = [
             Temperature(
                 ua.NodeId(self.ID_TEMP_PRODUCT_CORE, nsidx),
@@ -436,6 +455,8 @@ class TunnelOvenExample(Unit):
             PowerOnDuration(ua.NodeId(self.ID_POWER_ON_DURATION, nsidx)),
             op_dur2,
             PowerOnDuration(ua.NodeId(self.ID_POWER_ON_DURATION_2, nsidx)),
+            MachineDesignSpeed(ua.NodeId(self.ID_MACHINE_DESIGN_SPEED, nsidx), speed=DESIGN_SPEED),
+            product_counter,
         ]
         for m in self.modules:
             m.variant_type = ua.VariantType.Double

@@ -1,0 +1,126 @@
+{
+  "title": "Tunnel Oven",
+  "uid": "tunnel_oven",
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Temperature — Product Core (°C)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT mean(\"tunnel_oven_temperature\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Pressure — Flue Gas & Steam (bar)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT mean(\"tunnel_oven_pressure_flue_gas\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A"
+        },
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT mean(\"tunnel_oven_pressure_flue_steam\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Good Products",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 8, "w": 8, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"tunnel_oven_good_products\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Scrap Products",
+      "type": "timeseries",
+      "gridPos": { "x": 8, "y": 8, "w": 8, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"tunnel_oven_scrap_products\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Machine Design Speed (products/s)",
+      "type": "stat",
+      "gridPos": { "x": 16, "y": 8, "w": 8, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"tunnel_oven_machine_design_speed\") FROM \"ws_brew_sim_server\" WHERE $timeFilter",
+          "rawQuery": true,
+          "refId": "A"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Operation Duration — Status (ms)",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"tunnel_oven_operation_duration\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A"
+        },
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"tunnel_oven_power_on_duration\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Operation Duration — Consumption (ms)",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 16, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"tunnel_oven_operation_duration_consumption\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A"
+        },
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"tunnel_oven_power_on_duration_consumption\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B"
+        }
+      ]
+    }
+  ]
+}

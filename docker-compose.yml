@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 
 services:
   bakeserver:
@@ -6,6 +6,7 @@ services:
     container_name: bakeserver
     ports:
       - "8080:8080"
+      - "4840:4840"
     restart: always
 
   influxdb:
@@ -32,5 +33,21 @@ services:
       - bakeserver
     restart: always
 
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - influxdb
+    restart: always
+
 volumes:
   influxdb_data:
+  grafana_data:
