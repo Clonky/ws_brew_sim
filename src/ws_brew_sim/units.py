@@ -12,7 +12,7 @@ from asyncua.server.event_generator import EventGenerator
 
 from .events import Event, TransferEvent, UnitProcedureEvent
 from .jobs import FilterJob, JobState, TransferJob
-from .modules import Module, MachineDesignSpeed, OperationDuration, PowerOnDuration, Pressure, ProductCounter, Temperature, Timer, Turbidity, Volume
+from .modules import Module, MachineDesignSpeed, OperationDuration, PowerOnDuration, Pressure, ProductCounter, Setpoint, SignalTag, Temperature, Timer, Turbidity, Volume
 from .statemachine import MachineState, StateMachineTree
 
 if TYPE_CHECKING:
@@ -358,6 +358,20 @@ class TunnelOvenExample(Unit):
       - MachineDesignSpeed       ns=15;i=6250  (static, 2.0 products/s)
       - GoodProducts             ns=15;i=6241  (increments while Executing)
       - ScrapProducts            ns=15;i=6260  (increments rarely while Executing, ~2% of output)
+
+    SingleLayer > BakingZone0 > Heater > Monitoring > Process:
+      - ProcessValueSetpoint     ns=15;i=6215  (static 220 °C, Heater monitoring setpoint)
+      - AnalogSignal/Temperature ns=15;i=6221  (NormalDist ~220 °C, actual zone temperature)
+      - ProcessValueSetpoint     ns=15;i=6222  (static 220 °C, temperature setpoint)
+      - SignalTag                ns=15;i=6223  (static "TI-BZ0-1")
+      - ProcessValueSetpoint     ns=15;i=6224  (static 0.75, power level setpoint)
+
+    SingleLayer > BakingZone0 > Heater > MachineryBuildingBlocks > Monitoring > Process:
+      - ProcessValueSetpoint     ns=15;i=6216  (static 220 °C, MBB monitoring setpoint)
+      - AnalogSignal/Temperature ns=15;i=6225  (NormalDist ~220 °C, MBB temperature)
+      - ProcessValueSetpoint     ns=15;i=6226  (static 220 °C, MBB temperature setpoint)
+      - SignalTag                ns=15;i=6227  (static "TI-BZ0-2")
+      - ProcessValueSetpoint     ns=15;i=6232  (static 0.75, MBB power level setpoint)
     """
 
     ID_TUNNEL_OVEN = 5001
@@ -371,6 +385,16 @@ class TunnelOvenExample(Unit):
     ID_MACHINE_DESIGN_SPEED = 6250
     ID_GOOD_PRODUCTS = 6241
     ID_SCRAP_PRODUCTS = 6260
+    ID_BAKING_ZONE_TEMP_SETPOINT = 6215
+    ID_BAKING_ZONE_TEMP_SETPOINT_MBB = 6216
+    ID_BAKING_ZONE_TEMP = 6221
+    ID_BAKING_ZONE_TEMP_SP = 6222
+    ID_BAKING_ZONE_TEMP_TAG = 6223
+    ID_BAKING_ZONE_POWER_SP = 6224
+    ID_BAKING_ZONE_TEMP_MBB = 6225
+    ID_BAKING_ZONE_TEMP_SP_MBB = 6226
+    ID_BAKING_ZONE_TEMP_TAG_MBB = 6227
+    ID_BAKING_ZONE_POWER_SP_MBB = 6232
 
     def __init__(self, simulation: Simulation):
         # Placeholder node IDs (ns=15) are replaced with correct indices in connect().
@@ -436,14 +460,15 @@ class TunnelOvenExample(Unit):
                 2.0,
                 low=0.0,
                 high=300.0,
-            ),  # TemperatureProductCore
+                label="Monitoring > TemperatureProductCore",
+            ),
             Pressure(
                 ua.NodeId(self.ID_PRESSURE_FLUE_GAS, nsidx),
                 0.02,
                 0.005,
                 low=-0.5,
                 high=0.5,
-            ),  # PressureChimneyFlueGas
+            ),  # PressureChimneyFlueGas — label set via eu_info, display name from class
             Pressure(
                 ua.NodeId(self.ID_PRESSURE_CHIMNEY, nsidx),
                 0.015,
@@ -457,9 +482,34 @@ class TunnelOvenExample(Unit):
             PowerOnDuration(ua.NodeId(self.ID_POWER_ON_DURATION_2, nsidx)),
             MachineDesignSpeed(ua.NodeId(self.ID_MACHINE_DESIGN_SPEED, nsidx), speed=DESIGN_SPEED),
             product_counter,
+            # SingleLayer > BakingZone0 > Heater > Monitoring > Process
+            Temperature(ua.NodeId(self.ID_BAKING_ZONE_TEMP, nsidx), 220.0, 5.0, low=0.0, high=400.0,
+                        label="BZ0 > Heater > Temperature"),
+            Setpoint(ua.NodeId(self.ID_BAKING_ZONE_TEMP_SETPOINT, nsidx), 220.0,
+                     label="BZ0 > Heater > Monitoring > Setpoint"),
+            Setpoint(ua.NodeId(self.ID_BAKING_ZONE_TEMP_SP, nsidx), 220.0,
+                     label="BZ0 > Heater > Temperature > Setpoint"),
+            Setpoint(ua.NodeId(self.ID_BAKING_ZONE_POWER_SP, nsidx), 0.75,
+                     label="BZ0 > Heater > PowerLevel > Setpoint",
+                     variant_type=ua.VariantType.Float),
+            SignalTag(ua.NodeId(self.ID_BAKING_ZONE_TEMP_TAG, nsidx), "TI-BZ0-1",
+                      label="BZ0 > Heater > Temperature > SignalTag"),
+            # SingleLayer > BakingZone0 > Heater > MachineryBuildingBlocks > Monitoring > Process
+            Temperature(ua.NodeId(self.ID_BAKING_ZONE_TEMP_MBB, nsidx), 220.0, 5.0, low=0.0, high=400.0,
+                        label="BZ0 > Heater > MBB > Temperature"),
+            Setpoint(ua.NodeId(self.ID_BAKING_ZONE_TEMP_SETPOINT_MBB, nsidx), 220.0,
+                     label="BZ0 > Heater > MBB > Monitoring > Setpoint"),
+            Setpoint(ua.NodeId(self.ID_BAKING_ZONE_TEMP_SP_MBB, nsidx), 220.0,
+                     label="BZ0 > Heater > MBB > Temperature > Setpoint"),
+            Setpoint(ua.NodeId(self.ID_BAKING_ZONE_POWER_SP_MBB, nsidx), 0.75,
+                     label="BZ0 > Heater > MBB > PowerLevel > Setpoint",
+                     variant_type=ua.VariantType.Float),
+            SignalTag(ua.NodeId(self.ID_BAKING_ZONE_TEMP_TAG_MBB, nsidx), "TI-BZ0-2",
+                      label="BZ0 > Heater > MBB > Temperature > SignalTag"),
         ]
         for m in self.modules:
-            m.variant_type = ua.VariantType.Double
+            if m.variant_type is None:
+                m.variant_type = ua.VariantType.Double
         await super().connect(server)
 
     async def run(self):

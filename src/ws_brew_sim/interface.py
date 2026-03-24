@@ -175,8 +175,8 @@ def create_app(simulation: Simulation):
             "show_unit.html", {"request": request, "unit": unit}
         )
 
-    @app.get("/value/{unit_name}/{module_name}", response_class=HTMLResponse)
-    async def get_updated_value(request: Request, unit_name: str, module_name: str):
+    @app.get("/value/{unit_name}/{route_key}", response_class=HTMLResponse)
+    async def get_updated_value(request: Request, unit_name: str, route_key: str):
         unit: Unit | None = next(
             (unit for unit in simulation.units if unit.name == unit_name), None
         )
@@ -184,10 +184,10 @@ def create_app(simulation: Simulation):
             return HTMLResponse(
                 content=f"<h2>Unit {unit_name} not found</h2>", status_code=404
             )
-        module = next((mod for mod in unit.modules if mod.name == module_name), None)
+        module = next((mod for mod in unit.modules if mod.route_key == route_key), None)
         if module is None:
             return HTMLResponse(
-                content=f"<h2>Module {module_name} not found in unit {unit_name}</h2>",
+                content=f"<h2>Module {route_key} not found in unit {unit_name}</h2>",
                 status_code=404,
             )
         raw = module.update_behaviour.state if module.update_behaviour else None

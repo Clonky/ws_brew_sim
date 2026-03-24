@@ -33,8 +33,9 @@ def _range(low: float, high: float) -> ua.Range:
 
 
 class Module:
-    def __init__(self, name: str, node_id: NodeId | None, update_behaviour=None, unit: str | None = None, variant_type=None):
+    def __init__(self, name: str, node_id: NodeId | None, update_behaviour=None, unit: str | None = None, variant_type=None, label: str | None = None):
         self.name = name
+        self.label = label or name
         self.node_id = node_id
         self.node = None
         self.update_behaviour = update_behaviour
@@ -42,6 +43,13 @@ class Module:
         self.variant_type = variant_type
         self.eu_info: ua.EUInformation | None = None
         self.eu_range: ua.Range | None = None
+
+    @property
+    def route_key(self) -> str:
+        """URL-safe unique key for this module. Uses node identifier when available."""
+        if self.node_id is not None:
+            return f"n{self.node_id.Identifier}"
+        return self.name
 
     async def connect(self, server: Server):
         if not self.node:
@@ -148,8 +156,8 @@ class Temperature(Module):
     # UN/CEFACT "CEL" — degree Celsius
     _EU_INFO = _eu(4408652, "°C", "degree Celsius")
 
-    def __init__(self, nodeid, mean, std, low: float = -50.0, high: float = 300.0):
-        super().__init__("Temperature", nodeid, NormalDistBehaviour(mean, std), "°C")
+    def __init__(self, nodeid, mean, std, low: float = -50.0, high: float = 300.0, label: str | None = None):
+        super().__init__("Temperature", nodeid, NormalDistBehaviour(mean, std), "°C", label=label)
         self.eu_info = self._EU_INFO
         self.eu_range = _range(low, high)
 
@@ -258,3 +266,19 @@ class ProductCounter(Module):
             await self.scrap_node.write_value(
                 ua.DataValue(ua.Variant(self.scrap_count, ua.VariantType.Double))
             )
+
+
+class Setpoint(Module):
+    """Static numeric setpoint. Defaults to Double; pass variant_type for Float nodes."""
+
+    def __init__(self, nodeid, value: float, label: str | None = None, variant_type=None):
+        super().__init__("Setpoint", nodeid, StaticBehaviour(value), label=label)
+        self.variant_type = variant_type if variant_type is not None else ua.VariantType.Double
+
+
+class SignalTag(Module):
+    """Static string tag identifier."""
+
+    def __init__(self, nodeid, tag: str, label: str | None = None):
+        super().__init__("SignalTag", nodeid, StaticBehaviour(tag), label=label)
+        self.variant_type = ua.VariantType.String

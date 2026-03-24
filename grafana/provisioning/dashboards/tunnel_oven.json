@@ -125,6 +125,64 @@
           "refId": "B"
         }
       ]
+    },
+    {
+      "id": 8,
+      "title": "BakingZone0 — Temperature",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 24, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT mean(\"sl_bz0_heater_temperature\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A",
+          "alias": "SingleLayer > BakingZone0 > Heater > Temperature"
+        },
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"sl_bz0_heater_temperature_setpoint\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B",
+          "alias": "SingleLayer > BakingZone0 > Heater > Temperature Setpoint"
+        },
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT mean(\"sl_bz0_heater_mbb_temperature\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "C",
+          "alias": "SingleLayer > BakingZone0 > Heater > MBB > Temperature"
+        },
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"sl_bz0_heater_mbb_temperature_setpoint\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "D",
+          "alias": "SingleLayer > BakingZone0 > Heater > MBB > Temperature Setpoint"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "title": "BakingZone0 — Power Level Setpoints",
+      "type": "timeseries",
+      "gridPos": { "x": 12, "y": 24, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"sl_bz0_heater_power_setpoint\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "A",
+          "alias": "SingleLayer > BakingZone0 > Heater > PowerLevel Setpoint"
+        },
+        {
+          "datasource": "InfluxDB",
+          "query": "SELECT last(\"sl_bz0_heater_mbb_power_setpoint\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
+          "rawQuery": true,
+          "refId": "B",
+          "alias": "SingleLayer > BakingZone0 > Heater > MBB > PowerLevel Setpoint"
+        }
+      ]
     }
   ]
 }

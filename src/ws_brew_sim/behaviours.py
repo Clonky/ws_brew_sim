@@ -12,6 +12,7 @@ class Behaviour:
 
 class NormalDistBehaviour(Behaviour):
     def __init__(self, initial_state, stddev):
+        super().__init__(initial_state)
         self.mean = initial_state
         self.stddev = stddev
 

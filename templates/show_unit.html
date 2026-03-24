@@ -15,11 +15,11 @@
             {% for module in unit.modules %}
             <tr>
                 <td>
-                    {{ module.name }} {% if module.eu_info %}
+                    {{ module.label }} {% if module.eu_info %}
                     <div class="eu-description">{{ module.eu_info.Description.Text }}</div>
                     {% endif %}
                 </td>
-                <td hx-get="/value/{{unit.name}}/{{module.name}}" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</td>
+                <td hx-get="/value/{{unit.name}}/{{module.route_key}}" hx-swap="innerHTML" hx-trigger="load, every 2s">Loading...</td>
                 <td class="eu-range-cell">{% if module.eu_range %} {{ module.eu_range.Low }} – {{ module.eu_range.High }} {% else %} — {% endif %}</td>
                 <td>{% if module.eu_info %} {{ module.eu_info.DisplayName.Text }} {% else %} {{ module.unit }} {% endif %}</td>
             </tr>
