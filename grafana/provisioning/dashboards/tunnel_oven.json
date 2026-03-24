@@ -30,13 +30,15 @@
           "datasource": "InfluxDB",
           "query": "SELECT mean(\"tunnel_oven_pressure_flue_gas\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
-          "refId": "A"
+          "refId": "A",
+          "alias": "Pressure Flue Gas"
         },
         {
           "datasource": "InfluxDB",
           "query": "SELECT mean(\"tunnel_oven_pressure_flue_steam\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
-          "refId": "B"
+          "refId": "B",
+          "alias": "Pressure Flue Steam"
         }
       ]
     },
@@ -92,13 +94,15 @@
           "datasource": "InfluxDB",
           "query": "SELECT last(\"tunnel_oven_operation_duration\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
-          "refId": "A"
+          "refId": "A",
+          "alias": "Operation Duration"
         },
         {
           "datasource": "InfluxDB",
           "query": "SELECT last(\"tunnel_oven_power_on_duration\") FROM \"ws_brew_sim_server\" WHERE $timeFilter GROUP BY time($__interval) fill(none)",
           "rawQuery": true,
-          "refId": "B"
+          "refId": "B",
+          "alias": "Power On Duration"
         }
       ]
     },
